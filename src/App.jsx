@@ -1,4 +1,5 @@
 import './App.css'
+import { Link } from 'react-router'
 
 function App() {
   return (
@@ -11,29 +12,29 @@ function App() {
               <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center text-white font-bold text-lg">
                 AB
               </div>
-              <span className="text-xl font-bold text-slate-900">Admission Bot</span>
+              <span className="text-xl font-bold">Admission Bot</span>
             </div>
-            <div className="flex gap-2">
-              <button className="btn btn-primary btn-sm">Get Started</button>
+            <div>
+              <Link to="/chat" className="btn btn-primary">Get Started</Link>
             </div>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden px-4 py-20">
+      <section className="relative overflow-hidden px-4 py-16">
         <div className="container mx-auto text-center animate-fadeInUp">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">
             <span className="text-gradient">Intelligent Admissions Simplified</span>
             {/* <span className="text-slate-900"> </span> */}
           </h1>
-          <p className="text-lg sm:text-xl text-slate-600 mb-8 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl mb-8 leading-relaxed max-w-3xl mx-auto">
             Streamline your admission process with AI-powered assistance. Get instant answers, track applications, and make informed decisions.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="btn btn-primary btn-lg rounded-lg">
-              Start Free Trial
-            </button>
+            <Link to="/chat" className="btn btn-primary btn-lg rounded-lg">
+              Start Chatting
+            </Link>
             <button className="btn btn-outline btn-lg rounded-lg">
               Watch Demo
             </button>
@@ -44,10 +45,10 @@ function App() {
       {/* Features Section */}
       <section className="px-4 py-16 bg-slate-50">
         <div className="container mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-slate-900">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4">
             Powerful Features
           </h2>
-          <p className="text-center text-slate-600 mb-12 text-lg">
+          <p className="text-center mb-12 text-lg">
             Everything you need for seamless admissions management
           </p>
 
@@ -90,10 +91,10 @@ function App() {
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="text-4xl mb-3">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                <h3 className="text-xl font-semibold mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-slate-600">{feature.description}</p>
+                <p>{feature.description}</p>
               </div>
             ))}
           </div>
@@ -101,7 +102,7 @@ function App() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative px-4 py-20 gradient-primary text-white overflow-hidden">
+      <section className="relative px-4 py-16 gradient-primary text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.1\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'
@@ -112,16 +113,16 @@ function App() {
             Ready to Transform Your Admissions Process?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Join thousands of institutions using Admission Bot to streamline their operations.
+            Start your today and experience the future of admissions management with Admission Bot.
           </p>
-          <button className="btn btn-light btn-lg rounded-lg font-semibold">
+          <Link to="/chat" className="btn btn-light btn-lg rounded-lg font-semibold">
             Get Started Today
-          </button>
+          </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-300 px-4 py-12">
+      <footer className="bg-slate-900 text-slate-300 px-4 pt-12 pb-6">
         <div className="container mx-auto ">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div>
