@@ -4,6 +4,8 @@ import { Link } from 'react-router'
 function App() {
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 via-white to-slate-50">
+      <title>Home | Admission Bot</title>
+
       {/* Navigation Bar */}
       <nav className="bg-white border-b border-slate-100 sticky top-0 z-40 shadow-sm px-4">
         <div className="container mx-auto">
