@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { GoDotFill } from "react-icons/go";
 
@@ -33,6 +32,9 @@ export default function ChatInput({ onSendMessage, isLoading, suggestions = [] }
             onSendMessage(input.trim());
             setInput('');
             setShowSuggestions(false);
+            // mark that the user interacted and keep the textarea focused
+            userInteractedRef.current = true;
+            if (textareaRef.current && !isLoading) textareaRef.current.focus();
         }
     };
 
@@ -40,7 +42,18 @@ export default function ChatInput({ onSendMessage, isLoading, suggestions = [] }
         onSendMessage(suggestion);
         setInput('');
         setShowSuggestions(false);
+        userInteractedRef.current = true;
+        if (textareaRef.current && !isLoading) textareaRef.current.focus();
     };
+
+    // Only auto-focus after the user has started interacting (sent a message or used a suggestion)
+    const userInteractedRef = useRef(false);
+
+    useEffect(() => {
+        if (userInteractedRef.current && !isLoading && textareaRef.current) {
+            textareaRef.current.focus();
+        }
+    }, [isLoading]);
 
     const handleInputChange = (e) => {
         setInput(e.target.value);
@@ -60,11 +73,11 @@ export default function ChatInput({ onSendMessage, isLoading, suggestions = [] }
     };
 
     return (
-        <div className="border-t border-slate-200 bg-white px-4 py-4 drop-shadow">
+        <div className="border-t border-slate-200 bg-slate-300 px-4 py-4 drop-shadow">
             {/* Suggestions */}
             {showSuggestions && suggestions.length > 0 && (
                 <div className="container mx-auto mb-5 flex flex-wrap gap-3">
-                    {suggestions.slice(0, 3).map((suggestion, index) => (
+                    {suggestions.slice(0, 7).map((suggestion, index) => (
                         <button
                             key={index}
                             onClick={() => handleSuggestionClick(suggestion)}
@@ -84,14 +97,14 @@ export default function ChatInput({ onSendMessage, isLoading, suggestions = [] }
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
                     placeholder={placeholder}
-                    className="w-full bg-slate-50 border-2 border-gray-300 rounded-lg md:text-base px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 placeholder:text-gray-500 resize-none overflow-hidden max-h-16"
+                    className="w-full bg-slate-50 border-2 border-gray-300 rounded-lg md:text-base px-4 py-3 focus:outline-none focus:ring-1 focus:ring-blue-700 focus:border-blue-700 placeholder:text-gray-500 resize-none overflow-hidden max-h-16"
                     rows={1}
                     disabled={isLoading}
                 />
                 <button
                     type="submit"
                     disabled={isLoading || !input.trim()}
-                    className="bg-blue-500 hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium px-4 py-2.5 rounded-lg transition-colors flex items-center justify-center"
+                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-100 disabled:cursor-not-allowed text-white disabled:text-slate-400 font-medium px-4 py-2.5 rounded-lg transition-colors flex items-center justify-center"
                 >
                     {isLoading ? (
                         <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">

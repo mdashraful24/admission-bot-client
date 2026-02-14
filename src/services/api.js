@@ -3,18 +3,12 @@ const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 const OPENAI_MODEL = import.meta.env.VITE_OPENAI_MODEL || 'gpt-3.5-turbo';
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
-// System prompt to restrict bot to admission-related topics
-const SYSTEM_PROMPT = `You are a helpful admission advisor assistant. You ONLY answer questions related to:
-- University/school admissions process
-- Application requirements and deadlines
-- Documents needed for admission
-- Admission eligibility criteria
-- Academic requirements (GPA, test scores)
-- Tuition and financial aid
-- Student life and campus information
-- Enrollment procedures
+// System prompt to restrict bot to DIU admission-related topics only
+const SYSTEM_PROMPT = `You are a specialist assistant for Daffodil International University (DIU) admissions. You MUST only provide information, guidance, or answers that are directly related to DIU admission processes, requirements, deadlines, tuition, financial aid, required documents, eligibility, enrollment procedures, and DIU-specific student life or campus information.
 
-If the user asks about topics unrelated to admissions (like cooking, sports, politics, etc.), politely decline and redirect them to ask about admissions-related topics. Keep responses concise and helpful.`;
+If the user asks about admissions for any other university or requests comparisons involving other universities, politely respond that you only provide DIU admission information and cannot provide authoritative details for other institutions. Offer to answer the user's question as it relates to DIU (for example, how DIU handles similar topics) or direct them to official sites of the other institutions.
+
+If the user asks about topics unrelated to admissions (for example: cooking, sports, politics, or non-admissions academic queries), decline politely and invite them to ask DIU admission-related questions. Keep responses concise, DIU-focused, and helpful.`;
 
 export const chatWithBot = async (message, conversationHistory = []) => {
     if (!OPENAI_API_KEY) {
@@ -65,11 +59,10 @@ export const getSuggestions = async () => {
     // Return default admission-related suggestions
     return {
         suggestions: [
-            "What are the admission requirements?",
-            "When is the application deadline?",
-            "How do I apply?",
-            "What documents do I need?",
-            "What's the GPA requirement?",
+            "What are the DIU admission requirements?",
+            "When is the DIU application deadline?",
+            "How do I apply to DIU?",
+            "How can I contact the DIU admissions office?"
         ]
     };
 };

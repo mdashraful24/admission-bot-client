@@ -4,18 +4,19 @@ import { Link } from 'react-router'
 function App() {
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-50 via-white to-slate-50">
+      {/* Helmet */}
       <title>Home | Admission Bot</title>
 
       {/* Navigation Bar */}
       <nav className="bg-white border-b border-slate-100 sticky top-0 z-40 shadow-sm px-4">
         <div className="container mx-auto">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center text-white font-bold text-lg">
                 AB
               </div>
-              <span className="text-xl font-bold">Admission Bot</span>
-            </div>
+              <span className="text-xl md:text-2xl font-bold">Admission Bot</span>
+            </Link>
             <div>
               <Link to="/chat" className="btn btn-primary">Get Started</Link>
             </div>
@@ -63,7 +64,7 @@ function App() {
               },
               {
                 icon: '📊',
-                title: 'Analytics Dashboard',
+                title: 'Real-Time Analytics',
                 description: 'Track applications and analytics in real-time with detailed insights'
               },
               {
@@ -83,7 +84,7 @@ function App() {
               },
               {
                 icon: '📱',
-                title: 'Mobile Optimized',
+                title: 'Fully Responsive',
                 description: 'Fully responsive design for all devices and screen sizes'
               }
             ].map((feature, index) => (

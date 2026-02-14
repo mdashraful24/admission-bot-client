@@ -94,6 +94,7 @@ export default function Chat() {
 
     return (
         <div className="flex flex-col h-screen">
+            {/* Helmet */}
             <title>Chat | Admission Bot</title>
 
             {/* Header */}
@@ -104,12 +105,12 @@ export default function Chat() {
                             <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center text-white font-bold text-lg">
                                 AB
                             </div>
-                            <span className="text-xl font-bold">Admission Bot</span>
+                            <span className="text-xl md:text-2xl font-bold">Admission Bot</span>
                         </div>
                     </Link>
                     <button
                         onClick={handleClearChat}
-                        className="text-sm font-semibold px-3 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 transition-colors"
+                        className="btn btn-primary"
                     >
                         <span className='hidden md:block'>Clear Chat</span>
                         <span className='block md:hidden'>Clear</span>
