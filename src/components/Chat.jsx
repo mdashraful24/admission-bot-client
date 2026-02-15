@@ -49,21 +49,35 @@ export default function Chat() {
         setError(null);
 
         try {
-            // Prepare conversation history for API
-            const conversationHistory = messages.map((msg) => ({
-                role: msg.sender === 'user' ? 'user' : 'assistant',
-                content: msg.text,
-            }));
+            // Get bot response from server
+            const response = await chatWithBot(userMessage);
 
-            // Get bot response
-            const response = await chatWithBot(userMessage, conversationHistory);
+            // Extract the bot's response - handle multiple possible response formats
+            let botResponse = "I couldn't process your request. Please try again.";
+            
+            if (response) {
+                // Try different response field names
+                if (typeof response === 'string') {
+                    botResponse = response;
+                } else if (response.response) {
+                    botResponse = response.response;
+                } else if (response.message) {
+                    botResponse = response.message;
+                } else if (response.reply) {
+                    botResponse = response.reply;
+                } else if (response.text) {
+                    botResponse = response.text;
+                } else if (response.output) {
+                    botResponse = response.output;
+                }
+            }
 
             // Add bot message to chat
             const botMsgId = Date.now() + 1;
             const botMsg = {
                 id: botMsgId,
                 sender: 'bot',
-                text: response.reply || response.message || "I couldn't process your request. Please try again.",
+                text: botResponse,
                 timestamp: new Date(),
             };
 
@@ -85,7 +99,7 @@ export default function Chat() {
         } finally {
             setIsLoading(false);
         }
-    }, [messages]);
+    }, []);
 
     const handleClearChat = () => {
         setMessages([]);
@@ -108,13 +122,15 @@ export default function Chat() {
                             <span className="text-xl md:text-2xl font-bold">Admission Bot</span>
                         </div>
                     </Link>
-                    <button
-                        onClick={handleClearChat}
-                        className="btn btn-primary"
-                    >
-                        <span className='hidden md:block'>Clear Chat</span>
-                        <span className='block md:hidden'>Clear</span>
-                    </button>
+                    {messages.length > 0 && (
+                        <button
+                            onClick={handleClearChat}
+                            className="btn btn-primary"
+                        >
+                            <span className='hidden md:block'>Clear Chat</span>
+                            <span className='block md:hidden'>Clear</span>
+                        </button>
+                    )}
                 </div>
             </div>
 

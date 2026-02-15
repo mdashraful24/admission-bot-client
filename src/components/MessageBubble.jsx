@@ -10,8 +10,8 @@ export default function MessageBubble({ message }) {
             )}
             <div
                 className={`max-w-xs lg:max-w-2xl px-4 py-3 rounded-lg ${isUser
-                        ? 'bg-blue-500 text-white rounded-br-none'
-                        : 'bg-slate-200 rounded-tl-none'
+                    ? 'bg-blue-500 text-white rounded-br-none'
+                    : 'bg-slate-200 rounded-tl-none'
                     }`}
             >
                 <p className="wrap-break-word whitespace-pre-wrap text-sm leading-relaxed">
