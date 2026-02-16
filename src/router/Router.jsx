@@ -1,11 +1,21 @@
 import { createBrowserRouter } from "react-router";
-import App from "../App";
 import Chat from "../components/Chat";
+import RootLayout from "../Layout/RootLayout";
+import Home from "../page/Home/Home";
+import EligibilityCalculator from "../page/EligibilityCalculator/EligibilityCalculator";
+import FinalWaiver from "../page/FinalWaiver/FinalWaiver";
+import TuitionFee from "../page/TuitionFee/TuitionFee";
 
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <App></App>
+        Component: RootLayout,
+        children: [
+            { index: true, Component: Home },
+            { path: "eligibility-calculator", Component: EligibilityCalculator },
+            { path: "waiver-calculator", Component: FinalWaiver },
+            { path: "tuition-fee-calculator", Component: TuitionFee },
+        ]
     },
     {
         path: "/chat",

@@ -1,0 +1,828 @@
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+// API Base URL from environment
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://osru23-admission-bot.hf.space';
+
+// Validation Schema with custom messages
+const validationSchema = yup.object({
+    sscResult: yup
+        .number()
+        .typeError('Please enter a valid number')
+        .min(0, 'GPA cannot be less than 0')
+        .max(5, 'GPA cannot exceed 5')
+        .required('SSC result is required'),
+
+    hscResult: yup
+        .number()
+        .typeError('Please enter a valid number')
+        .min(0, 'GPA cannot be less than 0')
+        .max(5, 'GPA cannot exceed 5')
+        .required('HSC result is required'),
+
+    group: yup
+        .string()
+        .oneOf(['science', 'commerce', 'arts'], 'Please select a valid group')
+        .required('Please select your group'),
+
+    scienceChoice: yup.string().when('group', {
+        is: 'science',
+        then: (schema) => schema
+            .oneOf(['Math', 'Biology', 'Both'], 'Please select a valid stream')
+            .required('Please select your science stream'),
+        otherwise: (schema) => schema.notRequired()
+    }),
+
+    engResult: yup
+        .number()
+        .typeError('Please enter a valid number')
+        .min(0, 'GPA cannot be less than 0')
+        .max(5, 'GPA cannot exceed 5')
+        .required('English result is required'),
+
+    mathResult: yup.number().when(['group', 'scienceChoice'], {
+        is: (group, scienceChoice) => group === 'science' && (scienceChoice === 'Math' || scienceChoice === 'Both'),
+        then: (schema) => schema
+            .typeError('Please enter a valid number')
+            .min(0, 'GPA cannot be less than 0')
+            .max(5, 'GPA cannot exceed 5')
+            .required('Mathematics result is required'),
+        otherwise: (schema) => schema.notRequired()
+    }),
+
+    phyResult: yup.number().when(['group', 'scienceChoice'], {
+        is: (group, scienceChoice) => group === 'science' && (scienceChoice === 'Math' || scienceChoice === 'Both'),
+        then: (schema) => schema
+            .typeError('Please enter a valid number')
+            .min(0, 'GPA cannot be less than 0')
+            .max(5, 'GPA cannot exceed 5')
+            .required('Physics result is required'),
+        otherwise: (schema) => schema.notRequired()
+    }),
+
+    chemResult: yup.number().when(['group', 'scienceChoice'], {
+        is: (group, scienceChoice) => group === 'science' && (scienceChoice === 'Math' || scienceChoice === 'Both'),
+        then: (schema) => schema
+            .typeError('Please enter a valid number')
+            .min(0, 'GPA cannot be less than 0')
+            .max(5, 'GPA cannot exceed 5')
+            .required('Chemistry result is required'),
+        otherwise: (schema) => schema.notRequired()
+    }),
+
+    bioResult: yup.number().when(['group', 'scienceChoice'], {
+        is: (group, scienceChoice) => group === 'science' && (scienceChoice === 'Biology' || scienceChoice === 'Both'),
+        then: (schema) => schema
+            .typeError('Please enter a valid number')
+            .min(0, 'GPA cannot be less than 0')
+            .max(5, 'GPA cannot exceed 5')
+            .required('Biology result is required'),
+        otherwise: (schema) => schema.notRequired()
+    }),
+
+    interests: yup.string()
+});
+
+const EligibilityCalculator = () => {
+    const [result, setResult] = useState(null);
+    const [showGuidelines, setShowGuidelines] = useState(true);
+    const [currentStep, setCurrentStep] = useState(1);
+    const [formData, setFormData] = useState(null);
+
+    const {
+        register,
+        handleSubmit,
+        watch,
+        setValue,
+        formState: { errors, isSubmitting }
+    } = useForm({
+        resolver: yupResolver(validationSchema),
+        defaultValues: {
+            group: 'Select',
+            scienceChoice: 'Select',
+            sscResult: '',
+            hscResult: '',
+            engResult: '',
+            mathResult: '',
+            phyResult: '',
+            chemResult: '',
+            bioResult: '',
+            interests: ''
+        }
+    });
+
+    const group = watch('group');
+    const scienceChoice = watch('scienceChoice');
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
+        if (group !== 'science') {
+            setValue('scienceChoice', 'Math');
+            setValue('mathResult', '');
+            setValue('phyResult', '');
+            setValue('chemResult', '');
+            setValue('bioResult', '');
+        }
+    }, [group, setValue]);
+
+    const recommendFromKeywords = (interests, departmentType) => {
+        if (!interests) return "No interests provided.";
+
+        const words = interests.toLowerCase()
+            .match(/\b[a-zA-Z]+\b/g)
+            ?.slice(0, 4) || [];
+
+        if (words.length === 0) return "Please enter valid interests.";
+
+        let eligibleDepts = [];
+        if (departmentType === 'pharmacy') {
+            eligibleDepts = ['Pharmacy'];
+        } else {
+            eligibleDepts = Object.entries(recommendationKeywords)
+                .filter(([dept, keywords]) =>
+                    words.some(word => keywords.some(keyword =>
+                        keyword.toLowerCase().includes(word) || word.includes(keyword.toLowerCase())
+                    ))
+                )
+                .map(([dept]) => dept);
+        }
+
+        return eligibleDepts.length > 0
+            ? [...new Set(eligibleDepts)].sort().join('\n')
+            : "No matching department found based on your interests.";
+    };
+
+    const checkEligibility = (data) => {
+        const ssc = parseFloat(data.sscResult);
+        const hsc = parseFloat(data.hscResult);
+        const eng = parseFloat(data.engResult);
+        const math = parseFloat(data.mathResult || 0);
+        const phy = parseFloat(data.phyResult || 0);
+        const chem = parseFloat(data.chemResult || 0);
+        const bio = parseFloat(data.bioResult || 0);
+
+        if (ssc <= 2.5 || hsc <= 2.5) {
+            return {
+                eligible: false,
+                message: "Based on your SSC/HSC results, you don't meet the minimum eligibility criteria (GPA > 2.5 required).",
+                deptType: null
+            };
+        }
+
+        if (group === 'science') {
+            if (scienceChoice === 'Math') {
+                if (eng > 2.5 && math > 2.5 && phy > 2.5 && chem > 2.5) {
+                    return {
+                        eligible: true,
+                        message: departmentKeywords.dept4.join('\n'),
+                        deptType: 'math'
+                    };
+                } else {
+                    return {
+                        eligible: false,
+                        message: "You don't meet the subject-wise requirements for Science (Mathematics) programs. Each subject requires GPA > 2.5.",
+                        deptType: null
+                    };
+                }
+            }
+
+            else if (scienceChoice === 'Biology') {
+                if (eng > 2.5 && bio > 2.5 && phy > 2.5 && chem > 2.5) {
+                    return {
+                        eligible: true,
+                        message: departmentKeywords.dept3.join('\n'),
+                        deptType: 'biology'
+                    };
+                } else {
+                    return {
+                        eligible: false,
+                        message: "You don't meet the subject-wise requirements for Science (Biology) programs. Each subject requires GPA > 2.5.",
+                        deptType: null
+                    };
+                }
+            }
+
+            else if (scienceChoice === 'Both') {
+                if (eng > 2.5 && math > 2.5 && phy > 2.5 && chem > 2.5 && bio > 2.5) {
+                    if (bio > 3.5 && phy > 3.0 && chem > 3.5 && math > 3.0) {
+                        return {
+                            eligible: true,
+                            message: departmentKeywords.dept6.join('\n'),
+                            deptType: 'pharmacy'
+                        };
+                    } else {
+                        return {
+                            eligible: true,
+                            message: departmentKeywords.dept5.join('\n'),
+                            deptType: 'both_low'
+                        };
+                    }
+                } else {
+                    return {
+                        eligible: false,
+                        message: "You don't meet the subject-wise requirements for Science (Both) programs. Each subject requires GPA > 2.5.",
+                        deptType: null
+                    };
+                }
+            }
+        }
+
+        else { // Commerce or Arts
+            if (eng > 2.5) {
+                return {
+                    eligible: true,
+                    message: departmentKeywords.dept2.join('\n'),
+                    deptType: 'commerce_high'
+                };
+            } else {
+                return {
+                    eligible: true,
+                    message: departmentKeywords.dept1.join('\n'),
+                    deptType: 'commerce_low'
+                };
+            }
+        }
+    };
+
+    const onSubmit = async (data) => {
+        // Store form data for display
+        setFormData(data);
+
+        try {
+            // Send form data to API
+            const response = await fetch(`${API_BASE_URL}/eligibility`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    sscResult: parseFloat(data.sscResult),
+                    hscResult: parseFloat(data.hscResult),
+                    group: data.group,
+                    scienceChoice: data.scienceChoice,
+                    engResult: parseFloat(data.engResult),
+                    mathResult: data.mathResult ? parseFloat(data.mathResult) : null,
+                    phyResult: data.phyResult ? parseFloat(data.phyResult) : null,
+                    chemResult: data.chemResult ? parseFloat(data.chemResult) : null,
+                    bioResult: data.bioResult ? parseFloat(data.bioResult) : null,
+                    interests: data.interests
+                }),
+            });
+
+            if (response.ok) {
+                const apiResult = await response.json();
+                setResult({
+                    eligibility: apiResult.eligibility || checkEligibility(data).message,
+                    recommendations: apiResult.recommendations || recommendFromKeywords(data.interests, apiResult.deptType)
+                });
+            } else {
+                // Fallback to local eligibility check if API fails
+                const eligibilityResult = checkEligibility(data);
+                if (eligibilityResult.eligible) {
+                    const recommendations = recommendFromKeywords(
+                        data.interests,
+                        eligibilityResult.deptType
+                    );
+                    setResult({
+                        eligibility: eligibilityResult.message,
+                        recommendations: recommendations
+                    });
+                } else {
+                    setResult({
+                        eligibility: eligibilityResult.message,
+                        recommendations: ""
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('API Error:', error);
+            // Fallback to local eligibility check
+            const eligibilityResult = checkEligibility(data);
+            if (eligibilityResult.eligible) {
+                const recommendations = recommendFromKeywords(
+                    data.interests,
+                    eligibilityResult.deptType
+                );
+                setResult({
+                    eligibility: eligibilityResult.message,
+                    recommendations: recommendations
+                });
+            } else {
+                setResult({
+                    eligibility: eligibilityResult.message,
+                    recommendations: ""
+                });
+            }
+        }
+
+        setTimeout(() => {
+            document.getElementById('results-section')?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }, 100);
+    };
+
+    const getInputClassName = (error) => `
+    w-full px-4 py-3.5 border rounded-xl transition-all duration-200
+    focus:outline-none focus:ring-2 focus:ring-offset-2
+    ${error
+            ? 'border-red-300 bg-red-50 focus:ring-red-500 focus:border-red-500'
+            : 'border-gray-200 bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white'
+        }
+  `;
+
+    // Step indicators
+    const steps = [
+        { number: 1, title: 'Basic Results', description: 'SSC & HSC GPA' },
+        { number: 2, title: 'Group & Subjects', description: 'Academic background' },
+        { number: 3, title: 'Interests', description: 'Career preferences' }
+    ];
+
+    return (
+        <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-indigo-50">
+            {/* Hero Section */}
+            <div className="bg-linear-to-r from-indigo-600 to-purple-600 text-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                    <div className="text-center">
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                            Find Your Perfect Department
+                        </h1>
+                        <p className="text-xl text-indigo-100 max-w-3xl mx-auto">
+                            Discover which university programs match your academic results and career interests
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
+                {/* Quick Guidelines Card */}
+                {showGuidelines && (
+                    <div className="bg-white rounded-2xl shadow-xl border border-indigo-100 p-6 mb-8 relative">
+                        <button
+                            onClick={() => setShowGuidelines(false)}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <div className="flex items-start space-x-4">
+                            <div className="bg-indigo-100 rounded-full p-3">
+                                <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Quick Guidelines</h3>
+                                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-600">
+                                    <li className="flex items-center">
+                                        <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                        </svg>
+                                        Enter your SSC and HSC GPA (0-5 scale)
+                                    </li>
+                                    <li className="flex items-center">
+                                        <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                        </svg>
+                                        Select your group and subjects
+                                    </li>
+                                    <li className="flex items-center">
+                                        <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                        </svg>
+                                        Add your interests for personalized recommendations
+                                    </li>
+                                    <li className="flex items-center">
+                                        <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                        </svg>
+                                        Get instant eligibility results
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Progress Steps */}
+                <div className="mb-8">
+                    <div className="flex items-center justify-between">
+                        {steps.map((step, index) => (
+                            <div key={step.number} className="flex-1 relative">
+                                {index < steps.length - 1 && (
+                                    <div className="absolute top-5 left-1/2 w-full h-0.5 bg-gray-200">
+                                        <div className="h-full bg-indigo-600" style={{ width: currentStep > step.number ? '100%' : '0%' }} />
+                                    </div>
+                                )}
+                                <div className="relative flex flex-col items-center">
+                                    <div className={`
+                    w-10 h-10 rounded-full flex items-center justify-center font-semibold
+                    ${currentStep >= step.number
+                                            ? 'bg-indigo-600 text-white'
+                                            : 'bg-gray-200 text-gray-500'}
+                  `}>
+                                        {currentStep > step.number ? (
+                                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                        ) : step.number}
+                                    </div>
+                                    <div className="text-center mt-2">
+                                        <div className="text-sm font-medium text-gray-900">{step.title}</div>
+                                        <div className="text-xs text-gray-500">{step.description}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Main Form Card */}
+                <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
+                    <div className="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-100">
+                        <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+                            <svg className="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            Student Information Form
+                        </h2>
+                    </div>
+
+                    <form onSubmit={handleSubmit(onSubmit)} className="p-6">
+                        <div className="space-y-8">
+                            {/* Section 1: Basic Results */}
+                            <div className="space-y-4" onClick={() => setCurrentStep(1)}>
+                                <h3 className="text-lg font-medium text-gray-700 flex items-center">
+                                    <span className="bg-indigo-100 text-indigo-600 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2">1</span>
+                                    Basic Academic Results
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pl-8">
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-medium">
+                                            SSC Result (GPA) <span className="text-red-500">*</span>
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                step="0.01"
+                                                {...register('sscResult')}
+                                                className={getInputClassName(errors.sscResult)}
+                                                placeholder="e.g., 4.50"
+                                            />
+                                            <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
+                                        </div>
+                                        {errors.sscResult && (
+                                            <p className="text-sm text-red-600 flex items-center">
+                                                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                </svg>
+                                                {errors.sscResult.message}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-medium">
+                                            HSC Result (GPA) <span className="text-red-500">*</span>
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                step="0.01"
+                                                {...register('hscResult')}
+                                                className={getInputClassName(errors.hscResult)}
+                                                placeholder="e.g., 4.80"
+                                            />
+                                            <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
+                                        </div>
+                                        {errors.hscResult && (
+                                            <p className="text-sm text-red-600 flex items-center">
+                                                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                </svg>
+                                                {errors.hscResult.message}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Section 2: Group & Subjects */}
+                            <div className="space-y-4" onClick={() => setCurrentStep(2)}>
+                                <h3 className="text-lg font-medium text-gray-700 flex items-center">
+                                    <span className="bg-indigo-100 text-indigo-600 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2">2</span>
+                                    Group & Subject Results
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pl-8">
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-medium text-gray-600">
+                                            Your Group <span className="text-red-500">*</span>
+                                        </label>
+                                        <select
+                                            {...register('group')}
+                                            className={getInputClassName(errors.group)}
+                                        >
+                                            <option defaultValue={"Select"}>Select</option>
+                                            <option value="science">Science</option>
+                                            <option value="commerce">Commerce</option>
+                                            <option value="arts">Arts/Humanities</option>
+                                        </select>
+                                        {errors.group && (
+                                            <p className="text-sm text-red-600 flex items-center">
+                                                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                </svg>
+                                                {errors.group.message}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {group === 'science' && (
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-medium text-gray-600">
+                                                Science Stream <span className="text-red-500">*</span>
+                                            </label>
+                                            <select
+                                                {...register('scienceChoice')}
+                                                className={getInputClassName(errors.scienceChoice)}
+                                            >
+                                                <option value="Math">Mathematics</option>
+                                                <option value="Biology">Biology</option>
+                                                <option value="Both">Both Mathematics & Biology</option>
+                                            </select>
+                                            {errors.scienceChoice && (
+                                                <p className="text-sm text-red-600 flex items-center">
+                                                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                    </svg>
+                                                    {errors.scienceChoice.message}
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-medium">
+                                            English Result <span className="text-red-500">*</span>
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                step="0.01"
+                                                {...register('engResult')}
+                                                className={getInputClassName(errors.engResult)}
+                                                placeholder="Enter English GPA"
+                                            />
+                                            <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
+                                        </div>
+                                        {errors.engResult && (
+                                            <p className="text-sm text-red-600 flex items-center">
+                                                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                </svg>
+                                                {errors.engResult.message}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {group === 'science' && (scienceChoice === 'Math' || scienceChoice === 'Both') && (
+                                        <>
+                                            <div className="space-y-2">
+                                                <label className="block text-sm font-medium">
+                                                    Mathematics Result
+                                                </label>
+                                                <div className="relative">
+                                                    <input
+                                                        type="text"
+                                                        step="0.01"
+                                                        {...register('mathResult')}
+                                                        className={getInputClassName(errors.mathResult)}
+                                                        placeholder="Enter Math GPA"
+                                                    />
+                                                    <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
+                                                </div>
+                                                {errors.mathResult && (
+                                                    <p className="text-sm text-red-600 flex items-center">
+                                                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                        </svg>
+                                                        {errors.mathResult.message}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="block text-sm font-medium">
+                                                    Physics Result
+                                                </label>
+                                                <div className="relative">
+                                                    <input
+                                                        type="text"
+                                                        step="0.01"
+                                                        {...register('phyResult')}
+                                                        className={getInputClassName(errors.phyResult)}
+                                                        placeholder="Enter Physics GPA"
+                                                    />
+                                                    <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
+                                                </div>
+                                                {errors.phyResult && (
+                                                    <p className="text-sm text-red-600 flex items-center">
+                                                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                        </svg>
+                                                        {errors.phyResult.message}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="block text-sm font-medium">
+                                                    Chemistry Result
+                                                </label>
+                                                <div className="relative">
+                                                    <input
+                                                        type="text"
+                                                        step="0.01"
+                                                        {...register('chemResult')}
+                                                        className={getInputClassName(errors.chemResult)}
+                                                        placeholder="Enter Chemistry GPA"
+                                                    />
+                                                    <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
+                                                </div>
+                                                {errors.chemResult && (
+                                                    <p className="text-sm text-red-600 flex items-center">
+                                                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                        </svg>
+                                                        {errors.chemResult.message}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </>
+                                    )}
+
+                                    {group === 'science' && (scienceChoice === 'Biology' || scienceChoice === 'Both') && (
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-medium">
+                                                Biology Result
+                                            </label>
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    step="0.01"
+                                                    {...register('bioResult')}
+                                                    className={getInputClassName(errors.bioResult)}
+                                                    placeholder="Enter Biology GPA"
+                                                />
+                                                <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
+                                            </div>
+                                            {errors.bioResult && (
+                                                <p className="text-sm text-red-600 flex items-center">
+                                                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                    </svg>
+                                                    {errors.bioResult.message}
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Section 3: Interests */}
+                            <div className="space-y-4" onClick={() => setCurrentStep(3)}>
+                                <h3 className="text-lg font-medium text-gray-700 flex items-center">
+                                    <span className="bg-indigo-100 text-indigo-600 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2">3</span>
+                                    Career Interests
+                                </h3>
+                                <div className="pl-8">
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-medium text-gray-600">
+                                            What are you interested in?
+                                        </label>
+                                        <input
+                                            type="text"
+                                            {...register('interests')}
+                                            className={getInputClassName(errors.interests)}
+                                            placeholder="e.g., computer, programming, software, engineering, business, etc."
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Submit Button */}
+                        <div className="mt-8">
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 px-6 rounded-xl font-semibold 
+                         hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                         focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transform transition-all 
+                         duration-200 hover:scale-[1.02] shadow-lg hover:shadow-xl"
+                            >
+                                {isSubmitting ? (
+                                    <span className="flex items-center justify-center">
+                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Processing...
+                                    </span>
+                                ) : (
+                                    'Check My Eligibility & Get Recommendations'
+                                )}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                {/* Results Section */}
+                {result && (
+                    <div id="results-section" className="space-y-6 mb-8 animate-fadeIn">
+                        {/* Eligibility Results Card */}
+                        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                            <div className={`px-6 py-4 ${result.eligibility.includes('❌') ? 'bg-gradient-to-r from-red-500 to-pink-600' : 'bg-gradient-to-r from-green-500 to-emerald-600'}`}>
+                                <h2 className="text-xl font-bold text-white flex items-center">
+                                    <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Eligibility Result
+                                </h2>
+                            </div>
+                            <div className="p-6">
+                                <div className="bg-gray-50 rounded-xl p-6">
+                                    {result.eligibility.includes('❌') ? (
+                                        <div className="flex items-start space-x-3">
+                                            <div className="bg-red-100 rounded-full p-2 flex-shrink-0">
+                                                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            </div>
+                                            <p className="text-gray-700">{result.eligibility}</p>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <p className="text-green-600 font-medium mb-4 flex items-center">
+                                                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                                </svg>
+                                                You are eligible for the following programs:
+                                            </p>
+                                            <pre className="whitespace-pre-wrap font-sans text-gray-700 leading-relaxed">
+                                                {result.eligibility}
+                                            </pre>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Recommendations Card */}
+                        {result.recommendations && !result.eligibility.includes('❌') && (
+                            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                                <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
+                                    <h2 className="text-xl font-bold text-white flex items-center">
+                                        <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                        </svg>
+                                        Personalized Department Recommendations
+                                    </h2>
+                                </div>
+                                <div className="p-6">
+                                    <p className="text-gray-600 mb-4 flex items-center">
+                                        <svg className="w-5 h-5 mr-2 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z" />
+                                        </svg>
+                                        Based on your interests: <span className="font-medium text-gray-800 ml-1">"{formData.interests}"</span>
+                                    </p>
+                                    {result.recommendations.includes('No matching') ? (
+                                        <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-100">
+                                            <p className="text-yellow-700">{result.recommendations}</p>
+                                            <p className="text-sm text-yellow-600 mt-2">
+                                                Try adding more specific interests like "computer programming", "business management", or "healthcare"
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-gray-50 rounded-xl p-6">
+                                            <pre className="whitespace-pre-wrap font-sans text-gray-700 leading-relaxed">
+                                                {result.recommendations}
+                                            </pre>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default EligibilityCalculator;
