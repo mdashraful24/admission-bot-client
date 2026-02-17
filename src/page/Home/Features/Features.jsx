@@ -74,12 +74,12 @@ const Features = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {features.map((feature) => (
-                        <Link
-                            key={feature.id}
-                            to={feature.path}
+                        <div
                             className="group cursor-pointer block"
                         >
-                            <div className={`
+                            <Link
+                                key={feature.id}
+                                to={feature.path} className={`
                                 card ${getBgColor(feature.color)}
                                 rounded-xl p-6 shadow-md hover:shadow-xl
                                 transition-all duration-300 ease-in-out
@@ -105,8 +105,8 @@ const Features = () => {
                                         </span>
                                     </div>
                                 </div>
-                            </div>
-                        </Link>
+                            </Link>
+                        </div>
                     ))}
                 </div>
             </div>
