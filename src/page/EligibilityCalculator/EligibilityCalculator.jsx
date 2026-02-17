@@ -4,23 +4,27 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 // API Base URL from environment
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://osru23-admission-bot.hf.space';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-// Validation Schema with custom messages
+// Validation Schema with proper validation
 const validationSchema = yup.object({
     sscResult: yup
         .number()
-        .typeError('Please enter a valid number')
+        .typeError('SSC result must be a number')
         .min(0, 'GPA cannot be less than 0')
         .max(5, 'GPA cannot exceed 5')
-        .required('SSC result is required'),
+        .required('SSC result is required')
+        .test('two-decimals', 'GPA must have up to 2 decimal places',
+            value => !value || /^\d+(\.\d{1,2})?$/.test(value.toString())),
 
     hscResult: yup
         .number()
-        .typeError('Please enter a valid number')
+        .typeError('HSC result must be a number')
         .min(0, 'GPA cannot be less than 0')
         .max(5, 'GPA cannot exceed 5')
-        .required('HSC result is required'),
+        .required('HSC result is required')
+        .test('two-decimals', 'GPA must have up to 2 decimal places',
+            value => !value || /^\d+(\.\d{1,2})?$/.test(value.toString())),
 
     group: yup
         .string()
@@ -37,48 +41,58 @@ const validationSchema = yup.object({
 
     engResult: yup
         .number()
-        .typeError('Please enter a valid number')
+        .typeError('English result must be a number')
         .min(0, 'GPA cannot be less than 0')
         .max(5, 'GPA cannot exceed 5')
-        .required('English result is required'),
+        .required('English result is required')
+        .test('two-decimals', 'GPA must have up to 2 decimal places',
+            value => !value || /^\d+(\.\d{1,2})?$/.test(value.toString())),
 
     mathResult: yup.number().when(['group', 'scienceChoice'], {
         is: (group, scienceChoice) => group === 'science' && (scienceChoice === 'Math' || scienceChoice === 'Both'),
         then: (schema) => schema
-            .typeError('Please enter a valid number')
+            .typeError('Mathematics result must be a number')
             .min(0, 'GPA cannot be less than 0')
             .max(5, 'GPA cannot exceed 5')
-            .required('Mathematics result is required'),
+            .required('Mathematics result is required')
+            .test('two-decimals', 'GPA must have up to 2 decimal places',
+                value => !value || /^\d+(\.\d{1,2})?$/.test(value.toString())),
         otherwise: (schema) => schema.notRequired()
     }),
 
     phyResult: yup.number().when(['group', 'scienceChoice'], {
         is: (group, scienceChoice) => group === 'science' && (scienceChoice === 'Math' || scienceChoice === 'Both'),
         then: (schema) => schema
-            .typeError('Please enter a valid number')
+            .typeError('Physics result must be a number')
             .min(0, 'GPA cannot be less than 0')
             .max(5, 'GPA cannot exceed 5')
-            .required('Physics result is required'),
+            .required('Physics result is required')
+            .test('two-decimals', 'GPA must have up to 2 decimal places',
+                value => !value || /^\d+(\.\d{1,2})?$/.test(value.toString())),
         otherwise: (schema) => schema.notRequired()
     }),
 
     chemResult: yup.number().when(['group', 'scienceChoice'], {
         is: (group, scienceChoice) => group === 'science' && (scienceChoice === 'Math' || scienceChoice === 'Both'),
         then: (schema) => schema
-            .typeError('Please enter a valid number')
+            .typeError('Chemistry result must be a number')
             .min(0, 'GPA cannot be less than 0')
             .max(5, 'GPA cannot exceed 5')
-            .required('Chemistry result is required'),
+            .required('Chemistry result is required')
+            .test('two-decimals', 'GPA must have up to 2 decimal places',
+                value => !value || /^\d+(\.\d{1,2})?$/.test(value.toString())),
         otherwise: (schema) => schema.notRequired()
     }),
 
     bioResult: yup.number().when(['group', 'scienceChoice'], {
         is: (group, scienceChoice) => group === 'science' && (scienceChoice === 'Biology' || scienceChoice === 'Both'),
         then: (schema) => schema
-            .typeError('Please enter a valid number')
+            .typeError('Biology result must be a number')
             .min(0, 'GPA cannot be less than 0')
             .max(5, 'GPA cannot exceed 5')
-            .required('Biology result is required'),
+            .required('Biology result is required')
+            .test('two-decimals', 'GPA must have up to 2 decimal places',
+                value => !value || /^\d+(\.\d{1,2})?$/.test(value.toString())),
         otherwise: (schema) => schema.notRequired()
     }),
 
@@ -89,7 +103,6 @@ const EligibilityCalculator = () => {
     const [result, setResult] = useState(null);
     const [showGuidelines, setShowGuidelines] = useState(true);
     const [currentStep, setCurrentStep] = useState(1);
-    const [formData, setFormData] = useState(null);
 
     const {
         register,
@@ -100,8 +113,8 @@ const EligibilityCalculator = () => {
     } = useForm({
         resolver: yupResolver(validationSchema),
         defaultValues: {
-            group: 'Select',
-            scienceChoice: 'Select',
+            group: '',
+            scienceChoice: '',
             sscResult: '',
             hscResult: '',
             engResult: '',
@@ -116,13 +129,62 @@ const EligibilityCalculator = () => {
     const group = watch('group');
     const scienceChoice = watch('scienceChoice');
 
+    // Watch all required fields
+    const sscResult = watch('sscResult');
+    const hscResult = watch('hscResult');
+    const engResult = watch('engResult');
+    const mathResult = watch('mathResult');
+    const phyResult = watch('phyResult');
+    const chemResult = watch('chemResult');
+    const bioResult = watch('bioResult');
+
+    // Function to check if step 1 (Basic Results) is complete
+    const isStep1Complete = () => {
+        return sscResult && hscResult;
+    };
+
+    // Function to check if step 2 (Group & Subjects) is complete
+    const isStep2Complete = () => {
+        // Check if group is selected
+        if (!group) return false;
+
+        // Check if science stream is selected when group is science
+        if (group === 'science' && !scienceChoice) return false;
+
+        // Check if English result is provided
+        if (!engResult) return false;
+
+        // Check science subject results based on selection
+        if (group === 'science') {
+            if (scienceChoice === 'Math' || scienceChoice === 'Both') {
+                if (!mathResult || !phyResult || !chemResult) return false;
+            }
+            if (scienceChoice === 'Biology' || scienceChoice === 'Both') {
+                if (!bioResult) return false;
+            }
+        }
+
+        return true;
+    };
+
+    // Update current step based on which sections are complete
+    useEffect(() => {
+        if (isStep2Complete()) {
+            setCurrentStep(3);
+        } else if (isStep1Complete()) {
+            setCurrentStep(2);
+        } else {
+            setCurrentStep(1);
+        }
+    }, [sscResult, hscResult, group, scienceChoice, engResult, mathResult, phyResult, chemResult, bioResult]);
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
     useEffect(() => {
         if (group !== 'science') {
-            setValue('scienceChoice', 'Math');
+            setValue('scienceChoice', '');
             setValue('mathResult', '');
             setValue('phyResult', '');
             setValue('chemResult', '');
@@ -250,11 +312,8 @@ const EligibilityCalculator = () => {
     };
 
     const onSubmit = async (data) => {
-        // Store form data for display
-        setFormData(data);
-
         try {
-            // Send form data to API
+            // Try API first
             const response = await fetch(`${API_BASE_URL}/eligibility`, {
                 method: 'POST',
                 headers: {
@@ -277,11 +336,11 @@ const EligibilityCalculator = () => {
             if (response.ok) {
                 const apiResult = await response.json();
                 setResult({
-                    eligibility: apiResult.eligibility || checkEligibility(data).message,
-                    recommendations: apiResult.recommendations || recommendFromKeywords(data.interests, apiResult.deptType)
+                    eligibility: apiResult.eligibility,
+                    recommendations: apiResult.recommendations
                 });
             } else {
-                // Fallback to local eligibility check if API fails
+                // Fallback to local calculation
                 const eligibilityResult = checkEligibility(data);
                 if (eligibilityResult.eligible) {
                     const recommendations = recommendFromKeywords(
@@ -299,9 +358,8 @@ const EligibilityCalculator = () => {
                     });
                 }
             }
-        } catch (error) {
-            console.error('API Error:', error);
-            // Fallback to local eligibility check
+        } catch {
+            // Fallback to local calculation on error
             const eligibilityResult = checkEligibility(data);
             if (eligibilityResult.eligible) {
                 const recommendations = recommendFromKeywords(
@@ -329,15 +387,58 @@ const EligibilityCalculator = () => {
     };
 
     const getInputClassName = (error) => `
-    w-full px-4 py-3.5 border rounded-xl transition-all duration-200
-    focus:outline-none focus:ring-2 focus:ring-offset-2
-    ${error
+        w-full px-4 py-2.5 border rounded-lg
+        focus:outline-none focus:ring-2
+        ${error
             ? 'border-red-300 bg-red-50 focus:ring-red-500 focus:border-red-500'
-            : 'border-gray-200 bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white'
+            : 'border-gray-300 bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white'
         }
-  `;
+    `;
 
-    // Step indicators
+    const getSelectClassName = (error) => `
+        w-full px-4 py-2.5 border rounded-lg appearance-none bg-white
+        focus:outline-none focus:ring-2
+        ${error
+            ? 'border-red-300 bg-red-50 focus:ring-red-500 focus:border-red-500'
+            : 'border-gray-300 bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white'
+        }
+    `;
+
+    // Custom Select Component with arrow icon
+    const CustomSelect = ({ label, options, error, registration, placeholder }) => (
+        <div className="space-y-2">
+            <label className="block text-sm font-medium">
+                {label} <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+                <select
+                    {...registration}
+                    className={getSelectClassName(error)}
+                >
+                    <option value="">{placeholder}</option>
+                    {options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                    ))}
+                </select>
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+            </div>
+            {error && (
+                <p className="text-sm text-red-600 flex items-center">
+                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    {error.message}
+                </p>
+            )}
+        </div>
+    );
+
     const steps = [
         { number: 1, title: 'Basic Results', description: 'SSC & HSC GPA' },
         { number: 2, title: 'Group & Subjects', description: 'Academic background' },
@@ -345,42 +446,36 @@ const EligibilityCalculator = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-indigo-50">
-            {/* Hero Section */}
-            <div className="bg-linear-to-r from-indigo-600 to-purple-600 text-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                    <div className="text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                            Find Your Perfect Department
-                        </h1>
-                        <p className="text-xl text-indigo-100 max-w-3xl mx-auto">
-                            Discover which university programs match your academic results and career interests
-                        </p>
-                    </div>
-                </div>
+        <div className="container mx-auto min-h-screen px-4 py-10 md:py-14 lg:py-20">
+            <div className="text-center mb-14">
+                <h3 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-5">
+                    Find Your Perfect Department
+                </h3>
+                <p className="md:text-lg lg:text-xl max-w-3xl mx-auto">
+                    Discover which university programs match your academic results and career interests
+                </p>
             </div>
 
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
-                {/* Quick Guidelines Card */}
+            <div className="max-w-4xl mx-auto">
                 {showGuidelines && (
-                    <div className="bg-white rounded-2xl shadow-xl border border-indigo-100 p-6 mb-8 relative">
+                    <div className="bg-linear-to-r from-indigo-600 to-purple-700 text-white rounded-2xl shadow-xl p-7 mb-14 relative">
                         <button
                             onClick={() => setShowGuidelines(false)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                            className="absolute top-4 right-4 hover:text-red-600 hover:bg-red-50 p-1 rounded-full"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                         <div className="flex items-start space-x-4">
-                            <div className="bg-indigo-100 rounded-full p-3">
+                            <div className="bg-indigo-100 rounded-full p-2">
                                 <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
                             <div className="flex-1">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Quick Guidelines</h3>
-                                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-600">
+                                <h3 className="text-lg font-semibold mb-2">Quick Guidelines</h3>
+                                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                                     <li className="flex items-center">
                                         <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -411,23 +506,22 @@ const EligibilityCalculator = () => {
                     </div>
                 )}
 
-                {/* Progress Steps */}
-                <div className="mb-8">
+                <div className="mb-14">
                     <div className="flex items-center justify-between">
                         {steps.map((step, index) => (
                             <div key={step.number} className="flex-1 relative">
                                 {index < steps.length - 1 && (
                                     <div className="absolute top-5 left-1/2 w-full h-0.5 bg-gray-200">
-                                        <div className="h-full bg-indigo-600" style={{ width: currentStep > step.number ? '100%' : '0%' }} />
+                                        <div className="h-full bg-indigo-600"
+                                            style={{ width: currentStep > step.number ? '100%' : '0%' }} />
                                     </div>
                                 )}
                                 <div className="relative flex flex-col items-center">
-                                    <div className={`
-                    w-10 h-10 rounded-full flex items-center justify-center font-semibold
-                    ${currentStep >= step.number
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold
+                                            ${currentStep >= step.number
                                             ? 'bg-indigo-600 text-white'
-                                            : 'bg-gray-200 text-gray-500'}
-                  `}>
+                                            : 'bg-gray-200 text-gray-500'}`}
+                                    >
                                         {currentStep > step.number ? (
                                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -435,7 +529,7 @@ const EligibilityCalculator = () => {
                                         ) : step.number}
                                     </div>
                                     <div className="text-center mt-2">
-                                        <div className="text-sm font-medium text-gray-900">{step.title}</div>
+                                        <div className="text-sm font-medium">{step.title}</div>
                                         <div className="text-xs text-gray-500">{step.description}</div>
                                     </div>
                                 </div>
@@ -444,40 +538,35 @@ const EligibilityCalculator = () => {
                     </div>
                 </div>
 
-                {/* Main Form Card */}
-                <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
-                    <div className="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-100">
-                        <h2 className="text-xl font-semibold text-gray-800 flex items-center">
-                            <svg className="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                    <div className="bg-linear-to-r from-blue-100 to-white p-2 border-b border-gray-200">
+                        <h3 className="text-lg md:text-xl lg:text-2xl font-semibold flex items-center justify-center">
+                            <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                             </svg>
                             Student Information Form
-                        </h2>
+                        </h3>
                     </div>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="p-6">
+                    <form onSubmit={handleSubmit(onSubmit)} className="p-6 bg-linear-to-br from-slate-50 via-white to-indigo-50">
                         <div className="space-y-8">
-                            {/* Section 1: Basic Results */}
-                            <div className="space-y-4" onClick={() => setCurrentStep(1)}>
-                                <h3 className="text-lg font-medium text-gray-700 flex items-center">
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-medium flex items-center">
                                     <span className="bg-indigo-100 text-indigo-600 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2">1</span>
                                     Basic Academic Results
                                 </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pl-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pl-8 no-animation-grid">
                                     <div className="space-y-2">
                                         <label className="block text-sm font-medium">
                                             SSC Result (GPA) <span className="text-red-500">*</span>
                                         </label>
-                                        <div className="relative">
-                                            <input
-                                                type="text"
-                                                step="0.01"
-                                                {...register('sscResult')}
-                                                className={getInputClassName(errors.sscResult)}
-                                                placeholder="e.g., 4.50"
-                                            />
-                                            <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
-                                        </div>
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            {...register('sscResult')}
+                                            className={getInputClassName(errors.sscResult)}
+                                            placeholder="GPA out of 5.00"
+                                        />
                                         {errors.sscResult && (
                                             <p className="text-sm text-red-600 flex items-center">
                                                 <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -492,16 +581,13 @@ const EligibilityCalculator = () => {
                                         <label className="block text-sm font-medium">
                                             HSC Result (GPA) <span className="text-red-500">*</span>
                                         </label>
-                                        <div className="relative">
-                                            <input
-                                                type="text"
-                                                step="0.01"
-                                                {...register('hscResult')}
-                                                className={getInputClassName(errors.hscResult)}
-                                                placeholder="e.g., 4.80"
-                                            />
-                                            <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
-                                        </div>
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            {...register('hscResult')}
+                                            className={getInputClassName(errors.hscResult)}
+                                            placeholder="GPA out of 5.00"
+                                        />
                                         {errors.hscResult && (
                                             <p className="text-sm text-red-600 flex items-center">
                                                 <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -514,74 +600,60 @@ const EligibilityCalculator = () => {
                                 </div>
                             </div>
 
-                            {/* Section 2: Group & Subjects */}
-                            <div className="space-y-4" onClick={() => setCurrentStep(2)}>
-                                <h3 className="text-lg font-medium text-gray-700 flex items-center">
-                                    <span className="bg-indigo-100 text-indigo-600 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2">2</span>
+                            <div className="space-y-4">
+                                <h3 className={`text-lg font-medium flex items-center ${isStep2Complete() ? 'text-green-600' : 'text-gray-900'
+                                    }`}>
+                                    <span className={`rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2 ${isStep2Complete()
+                                        ? 'bg-green-100 text-green-600'
+                                        : 'bg-indigo-100 text-indigo-600'
+                                        }`}>
+                                        2
+                                    </span>
                                     Group & Subject Results
+                                    {isStep2Complete() && (
+                                        <svg className="w-5 h-5 ml-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                        </svg>
+                                    )}
                                 </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pl-8">
-                                    <div className="space-y-2">
-                                        <label className="block text-sm font-medium text-gray-600">
-                                            Your Group <span className="text-red-500">*</span>
-                                        </label>
-                                        <select
-                                            {...register('group')}
-                                            className={getInputClassName(errors.group)}
-                                        >
-                                            <option defaultValue={"Select"}>Select</option>
-                                            <option value="science">Science</option>
-                                            <option value="commerce">Commerce</option>
-                                            <option value="arts">Arts/Humanities</option>
-                                        </select>
-                                        {errors.group && (
-                                            <p className="text-sm text-red-600 flex items-center">
-                                                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                                                </svg>
-                                                {errors.group.message}
-                                            </p>
-                                        )}
-                                    </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pl-8 no-animation-grid">
+                                    <CustomSelect
+                                        label="Your Group"
+                                        options={[
+                                            { value: 'science', label: 'Science' },
+                                            { value: 'commerce', label: 'Commerce' },
+                                            { value: 'arts', label: 'Arts/Humanities' }
+                                        ]}
+                                        error={errors.group}
+                                        registration={register('group')}
+                                        placeholder="Select your group"
+                                    />
 
                                     {group === 'science' && (
-                                        <div className="space-y-2">
-                                            <label className="block text-sm font-medium text-gray-600">
-                                                Science Stream <span className="text-red-500">*</span>
-                                            </label>
-                                            <select
-                                                {...register('scienceChoice')}
-                                                className={getInputClassName(errors.scienceChoice)}
-                                            >
-                                                <option value="Math">Mathematics</option>
-                                                <option value="Biology">Biology</option>
-                                                <option value="Both">Both Mathematics & Biology</option>
-                                            </select>
-                                            {errors.scienceChoice && (
-                                                <p className="text-sm text-red-600 flex items-center">
-                                                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                                                    </svg>
-                                                    {errors.scienceChoice.message}
-                                                </p>
-                                            )}
-                                        </div>
+                                        <CustomSelect
+                                            label="Science Stream"
+                                            options={[
+                                                { value: 'Math', label: 'Mathematics' },
+                                                { value: 'Biology', label: 'Biology' },
+                                                { value: 'Both', label: 'Both Mathematics & Biology' }
+                                            ]}
+                                            error={errors.scienceChoice}
+                                            registration={register('scienceChoice')}
+                                            placeholder="Select your stream"
+                                        />
                                     )}
 
                                     <div className="space-y-2">
                                         <label className="block text-sm font-medium">
                                             English Result <span className="text-red-500">*</span>
                                         </label>
-                                        <div className="relative">
-                                            <input
-                                                type="text"
-                                                step="0.01"
-                                                {...register('engResult')}
-                                                className={getInputClassName(errors.engResult)}
-                                                placeholder="Enter English GPA"
-                                            />
-                                            <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
-                                        </div>
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            {...register('engResult')}
+                                            className={getInputClassName(errors.engResult)}
+                                            placeholder="Enter English GPA"
+                                        />
                                         {errors.engResult && (
                                             <p className="text-sm text-red-600 flex items-center">
                                                 <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -598,16 +670,13 @@ const EligibilityCalculator = () => {
                                                 <label className="block text-sm font-medium">
                                                     Mathematics Result
                                                 </label>
-                                                <div className="relative">
-                                                    <input
-                                                        type="text"
-                                                        step="0.01"
-                                                        {...register('mathResult')}
-                                                        className={getInputClassName(errors.mathResult)}
-                                                        placeholder="Enter Math GPA"
-                                                    />
-                                                    <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
-                                                </div>
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    {...register('mathResult')}
+                                                    className={getInputClassName(errors.mathResult)}
+                                                    placeholder="Enter Math GPA"
+                                                />
                                                 {errors.mathResult && (
                                                     <p className="text-sm text-red-600 flex items-center">
                                                         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -621,16 +690,13 @@ const EligibilityCalculator = () => {
                                                 <label className="block text-sm font-medium">
                                                     Physics Result
                                                 </label>
-                                                <div className="relative">
-                                                    <input
-                                                        type="text"
-                                                        step="0.01"
-                                                        {...register('phyResult')}
-                                                        className={getInputClassName(errors.phyResult)}
-                                                        placeholder="Enter Physics GPA"
-                                                    />
-                                                    <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
-                                                </div>
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    {...register('phyResult')}
+                                                    className={getInputClassName(errors.phyResult)}
+                                                    placeholder="Enter Physics GPA"
+                                                />
                                                 {errors.phyResult && (
                                                     <p className="text-sm text-red-600 flex items-center">
                                                         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -644,16 +710,13 @@ const EligibilityCalculator = () => {
                                                 <label className="block text-sm font-medium">
                                                     Chemistry Result
                                                 </label>
-                                                <div className="relative">
-                                                    <input
-                                                        type="text"
-                                                        step="0.01"
-                                                        {...register('chemResult')}
-                                                        className={getInputClassName(errors.chemResult)}
-                                                        placeholder="Enter Chemistry GPA"
-                                                    />
-                                                    <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
-                                                </div>
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    {...register('chemResult')}
+                                                    className={getInputClassName(errors.chemResult)}
+                                                    placeholder="Enter Chemistry GPA"
+                                                />
                                                 {errors.chemResult && (
                                                     <p className="text-sm text-red-600 flex items-center">
                                                         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -671,16 +734,13 @@ const EligibilityCalculator = () => {
                                             <label className="block text-sm font-medium">
                                                 Biology Result
                                             </label>
-                                            <div className="relative">
-                                                <input
-                                                    type="text"
-                                                    step="0.01"
-                                                    {...register('bioResult')}
-                                                    className={getInputClassName(errors.bioResult)}
-                                                    placeholder="Enter Biology GPA"
-                                                />
-                                                <span className="absolute right-3 top-5 text-xs text-gray-500">/5.0</span>
-                                            </div>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                {...register('bioResult')}
+                                                className={getInputClassName(errors.bioResult)}
+                                                placeholder="Enter Biology GPA"
+                                            />
                                             {errors.bioResult && (
                                                 <p className="text-sm text-red-600 flex items-center">
                                                     <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -694,15 +754,14 @@ const EligibilityCalculator = () => {
                                 </div>
                             </div>
 
-                            {/* Section 3: Interests */}
-                            <div className="space-y-4" onClick={() => setCurrentStep(3)}>
-                                <h3 className="text-lg font-medium text-gray-700 flex items-center">
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-medium flex items-center">
                                     <span className="bg-indigo-100 text-indigo-600 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2">3</span>
                                     Career Interests
                                 </h3>
                                 <div className="pl-8">
                                     <div className="space-y-2">
-                                        <label className="block text-sm font-medium text-gray-600">
+                                        <label className="block text-sm font-medium">
                                             What are you interested in?
                                         </label>
                                         <input
@@ -716,15 +775,11 @@ const EligibilityCalculator = () => {
                             </div>
                         </div>
 
-                        {/* Submit Button */}
                         <div className="mt-8">
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 px-6 rounded-xl font-semibold 
-                         hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 
-                         focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transform transition-all 
-                         duration-200 hover:scale-[1.02] shadow-lg hover:shadow-xl"
+                                className="w-full bg-indigo-800 text-white p-3 rounded-lg font-semibold hover:bg-indigo-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                             >
                                 {isSubmitting ? (
                                     <span className="flex items-center justify-center">
@@ -742,12 +797,10 @@ const EligibilityCalculator = () => {
                     </form>
                 </div>
 
-                {/* Results Section */}
                 {result && (
-                    <div id="results-section" className="space-y-6 mb-8 animate-fadeIn">
-                        {/* Eligibility Results Card */}
+                    <div id="results-section" className="space-y-6 mb-8">
                         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-                            <div className={`px-6 py-4 ${result.eligibility.includes('❌') ? 'bg-gradient-to-r from-red-500 to-pink-600' : 'bg-gradient-to-r from-green-500 to-emerald-600'}`}>
+                            <div className={`px-6 py-4 ${result.eligibility.includes('❌') ? 'bg-linear-to-r from-red-500 to-pink-600' : 'bg-linear-to-r from-green-500 to-emerald-600'}`}>
                                 <h2 className="text-xl font-bold text-white flex items-center">
                                     <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -759,7 +812,7 @@ const EligibilityCalculator = () => {
                                 <div className="bg-gray-50 rounded-xl p-6">
                                     {result.eligibility.includes('❌') ? (
                                         <div className="flex items-start space-x-3">
-                                            <div className="bg-red-100 rounded-full p-2 flex-shrink-0">
+                                            <div className="bg-red-100 rounded-full p-2 shrink-0">
                                                 <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
@@ -783,10 +836,9 @@ const EligibilityCalculator = () => {
                             </div>
                         </div>
 
-                        {/* Recommendations Card */}
                         {result.recommendations && !result.eligibility.includes('❌') && (
                             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-                                <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
+                                <div className="bg-linear-to-r from-indigo-500 to-purple-600 px-6 py-4">
                                     <h2 className="text-xl font-bold text-white flex items-center">
                                         <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -799,7 +851,7 @@ const EligibilityCalculator = () => {
                                         <svg className="w-5 h-5 mr-2 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z" />
                                         </svg>
-                                        Based on your interests: <span className="font-medium text-gray-800 ml-1">"{formData.interests}"</span>
+                                        Based on your interests: <span className="font-medium text-gray-800 ml-1">"{watch('interests')}"</span>
                                     </p>
                                     {result.recommendations.includes('No matching') ? (
                                         <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-100">

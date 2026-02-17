@@ -115,6 +115,13 @@
   animation-delay: 0.6s;
 }
 
+/* Override for forms that shouldn't have animation */
+.no-animation-grid>div,
+.no-animation-grid>div:nth-child(n) {
+  animation: none !important;
+  opacity: 1 !important;
+}
+
 /* Premium Navigation */
 nav {
   backdrop-filter: blur(10px);
