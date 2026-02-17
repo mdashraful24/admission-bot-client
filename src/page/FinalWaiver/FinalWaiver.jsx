@@ -27,6 +27,10 @@ const FinalWaiver = () => {
     const [result, setResult] = useState(null);
     const [openSelect, setOpenSelect] = useState(null);
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     // Program data
     const programs = [
         {

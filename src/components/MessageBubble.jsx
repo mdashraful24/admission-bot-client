@@ -2,7 +2,7 @@ export default function MessageBubble({ message }) {
     const isUser = message.sender === 'user';
 
     return (
-        <div className={`container mx-auto flex gap-3 lg:pl-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
+        <div className={`container mx-auto flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
             {!isUser && (
                 <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
                     <span className="text-white text-xs font-bold">AB</span>
