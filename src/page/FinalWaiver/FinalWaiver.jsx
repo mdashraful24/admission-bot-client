@@ -176,7 +176,7 @@ const FinalWaiver = () => {
         });
     };
 
-    // Custom Select Component with focus ring
+    // Custom Select Component with selected item at top
     const CustomSelect = ({
         label,
         value,
@@ -188,9 +188,40 @@ const FinalWaiver = () => {
         optionRenderer
     }) => {
         const [isOpen, setIsOpen] = useState(false);
-        const selectedOption = options?.find(opt =>
-            typeof opt === 'string' ? opt === value : opt.id === value || opt === value
-        );
+
+        // Find the selected option
+        const selectedOption = options?.find(opt => {
+            if (typeof opt === 'string') {
+                return opt === value;
+            }
+            return opt.id === value || opt === value;
+        });
+
+        // Reorder options to put selected item at the top
+        const getOrderedOptions = () => {
+            if (!options || !value) return options;
+
+            // Create a copy of options array
+            const optionsCopy = [...options];
+
+            // Find the index of selected option
+            const selectedIndex = optionsCopy.findIndex(opt => {
+                if (typeof opt === 'string') {
+                    return opt === value;
+                }
+                return opt.id === value || opt === value;
+            });
+
+            // If selected option found, remove it and put at the beginning
+            if (selectedIndex !== -1) {
+                const [selectedItem] = optionsCopy.splice(selectedIndex, 1);
+                return [selectedItem, ...optionsCopy];
+            }
+
+            return optionsCopy;
+        };
+
+        const orderedOptions = getOrderedOptions();
 
         return (
             <div className="relative">
@@ -201,10 +232,10 @@ const FinalWaiver = () => {
                     className={`relative cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                     onClick={() => !disabled && setIsOpen(!isOpen)}
                 >
-                    <div className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg flex items-center justify-between hover:border-blue-400 transition-all focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
+                    <div className={`w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg flex items-center justify-between transition-all focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent`}>
                         <div className="flex items-center gap-3">
-                            {Icon && <Icon className="w-5 h-5 text-gray-400" />}
-                            <span className={value ? '' : 'text-gray-400'}>
+                            {Icon && <Icon className={`w-5 h-5 ${selectedOption ? 'text-blue-600' : 'text-gray-400'}`} />}
+                            <span className={selectedOption ? '' : 'text-gray-400'}>
                                 {selectedOption
                                     ? (typeof selectedOption === 'string'
                                         ? selectedOption
@@ -213,8 +244,8 @@ const FinalWaiver = () => {
                             </span>
                         </div>
                         {isOpen ?
-                            <ChevronUp className="w-5 h-5 text-gray-400" /> :
-                            <ChevronDown className="w-5 h-5 text-gray-400" />
+                            <ChevronUp className={`w-5 h-5 ${selectedOption ? 'text-blue-600' : 'text-gray-400'}`} /> :
+                            <ChevronDown className={`w-5 h-5 ${selectedOption ? 'text-blue-600' : 'text-gray-400'}`} />
                         }
                     </div>
 
@@ -225,14 +256,18 @@ const FinalWaiver = () => {
                                 onClick={() => setIsOpen(false)}
                             />
                             <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-auto">
-                                {options?.map((option, index) => {
+                                {orderedOptions?.map((option, index) => {
                                     const optionValue = typeof option === 'string' ? option : option.id;
                                     const optionLabel = typeof option === 'string' ? option : option.name;
+                                    const isSelected = value === optionValue;
 
                                     return (
                                         <div
                                             key={index}
-                                            className="px-4 py-2.5 text-sm hover:bg-blue-50 cursor-pointer flex items-center gap-3 transition-colors focus:outline-none focus:bg-blue-50"
+                                            className={`px-4 py-2.5 text-sm cursor-pointer flex items-center gap-3 transition-colors focus:outline-none ${isSelected
+                                                ? 'bg-blue-500 text-white'
+                                                : 'hover:bg-blue-50 text-gray-700'
+                                                }`}
                                             onClick={() => {
                                                 onChange(optionValue);
                                                 setIsOpen(false);
@@ -245,14 +280,18 @@ const FinalWaiver = () => {
                                             }}
                                             tabIndex={0}
                                             role="option"
-                                            aria-selected={value === optionValue}
+                                            aria-selected={isSelected}
                                         >
-                                            {optionRenderer ? optionRenderer(option) : (
+                                            {optionRenderer ? optionRenderer(option, isSelected) : (
                                                 <>
-                                                    {option.icon && option.icon}
-                                                    <span>{optionLabel}</span>
-                                                    {value === optionValue && (
-                                                        <CheckCircle className="w-4 h-4 text-green-500 ml-auto" />
+                                                    {/* {option.icon && (
+                                                        <span className={isSelected ? 'text-white' : 'text-gray-500'}>
+                                                            {option.icon}
+                                                        </span>
+                                                    )} */}
+                                                    <span className={isSelected ? 'font-medium' : ''}>{optionLabel}</span>
+                                                    {isSelected && (
+                                                        <CheckCircle className="w-5 h-5 text-white ml-auto" />
                                                     )}
                                                 </>
                                             )}
@@ -291,394 +330,405 @@ const FinalWaiver = () => {
             {/* Main Content - Left Form, Right Result */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-8 no-animation-grid">
                 {/* Left Side - Form */}
-                <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 lg:mt-12">
-                    <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                        <div className="w-1 h-6 bg-linear-to-b from-blue-600 to-indigo-600 rounded-full"></div>
-                        Student Information
-                    </h2>
+                <div className="bg-linear-to-br from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg border border-gray-200 lg:mt-12">
+                    <div className="bg-linear-to-r from-blue-100 to-white p-2 border-b border-gray-200 rounded-t-2xl">
+                        <h3 className="text-lg md:text-xl lg:text-2xl font-semibold flex items-center justify-center">
+                            <svg className="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            Program & Details
+                        </h3>
+                    </div>
 
-                    <div className="space-y-6">
-                        {/* Program Selection */}
-                        <CustomSelect
-                            label="Select Program"
-                            value={formData.program}
-                            options={programs}
-                            onChange={handleProgramSelect}
-                            icon={GraduationCap}
-                            placeholder="Choose your program"
-                            optionRenderer={(program) => (
-                                <div className="flex items-center gap-3 w-full">
-                                    <div className="flex-1">
-                                        <div className="font-medium">{program.name}</div>
-                                    </div>
-                                </div>
-                            )}
-                        />
-
-                        {/* Program Details - Shows after selection */}
-                        {selectedProgram && showProgramDetails && (
-                            <div className="bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100 animate-fadeIn">
-                                <h3 className="font-semibold mb-3">Program Details</h3>
-                                <div className="grid grid-cols-3 gap-4 no-animation-grid">
-                                    <div className="text-center">
-                                        <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
-                                            <Clock className="w-5 h-5 text-blue-600" />
-                                        </div>
-                                        <div className="text-xs">Duration</div>
-                                        <div className="font-bold">{selectedProgram.duration}</div>
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
-                                            <BookOpen className="w-5 h-5 text-indigo-600" />
-                                        </div>
-                                        <div className="text-xs">Credits</div>
-                                        <div className="font-bold">{selectedProgram.credits}</div>
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
-                                            <DollarSign className="w-5 h-5 text-green-600" />
-                                        </div>
-                                        <div className="text-xs">Total Fees</div>
-                                        <div className="font-bold">৳{selectedProgram.fees.toLocaleString()}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Education Status */}
-                        <div className="space-y-2">
-                            <label className="block text-sm font-medium">Education Status</label>
-                            <div className="grid grid-cols-2 gap-3 no-animation-grid">
-                                {[
-                                    { id: 'general', name: 'General', icon: <BookOpen className="w-4 h-4" /> },
-                                    { id: 'diploma', name: 'Diploma', icon: <Award className="w-4 h-4" /> }
-                                ].map((status) => (
-                                    <button
-                                        key={status.id}
-                                        type="button"
-                                        onClick={() => {
-                                            setFormData(prev => ({ ...prev, eduStatus: status.id }));
-                                            setOpenSelect(null);
-                                        }}
-                                        className={`px-4 py-2.5 rounded-lg border transition-all flex items-center justify-center gap-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${formData.eduStatus === status.id
-                                            ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                            : 'border-gray-200 hover:border-blue-300 text-gray-600'
-                                            }`}
-                                    >
-                                        {status.icon}
-                                        {status.name}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Academic Results Section */}
-                        <div className="space-y-4">
-                            <h3 className="font-medium flex items-center gap-2">
-                                <Award className="w-4 h-4 text-blue-600" />
-                                Academic Results
-                            </h3>
-
-                            {formData.eduStatus === 'general' ? (
-                                <>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 place-items-center justify-items-center gap-3 no-animation-grid">
-                                        {/* SSC Result */}
-                                        <div className='w-full'>
-                                            <label className="block text-sm font-medium mb-2">
-                                                SSC Result/Equivalent
-                                            </label>
-                                            <input
-                                                type="number"
-                                                step="0.01"
-                                                min="0"
-                                                max="5"
-                                                value={formData.sscResult}
-                                                onChange={(e) => setFormData(prev => ({ ...prev, sscResult: e.target.value }))}
-                                                className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                                                placeholder="Enter GPA out of 5.00"
-                                            />
-                                        </div>
-
-                                        {/* HSC Result */}
-                                        <div className='hidden md:block w-full'>
-                                            <label className="block text-sm font-medium mb-2">
-                                                HSC Result/Equivalent
-                                            </label>
-                                            <input
-                                                type="number"
-                                                step="0.01"
-                                                min="0"
-                                                max="5"
-                                                value={formData.hscResult}
-                                                onChange={(e) => setFormData(prev => ({ ...prev, hscResult: e.target.value }))}
-                                                className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                                                placeholder="Enter GPA out of 5.00"
-                                            />
-                                        </div>
-
-                                        {/* Golden GPA Option - Only shows if GPA is 5.00 */}
-                                        {showGoldenOption(formData.sscResult) && (
-                                            <div className="w-full flex items-center gap-2 bg-gray-50 border border-gray-100 px-2 py-3 rounded-lg">
-                                                <Star className="w-4 h-4 text-yellow-500" />
-                                                <span className="text-sm font-medium">Golden GPA?</span>
-                                                <div className="flex items-center gap-3 ml-auto">
-                                                    <label className="flex items-center gap-2 cursor-pointer">
-                                                        <input
-                                                            type="radio"
-                                                            name="sscGolden"
-                                                            value="yes"
-                                                            checked={formData.sscGolden === 'yes'}
-                                                            onChange={(e) => setFormData(prev => ({ ...prev, sscGolden: e.target.value }))}
-                                                            className="w-4 h-4 text-blue-600"
-                                                        />
-                                                        <span className="text-sm">Yes</span>
-                                                    </label>
-                                                    <label className="flex items-center gap-2 cursor-pointer">
-                                                        <input
-                                                            type="radio"
-                                                            name="sscGolden"
-                                                            value="no"
-                                                            checked={formData.sscGolden === 'no'}
-                                                            onChange={(e) => setFormData(prev => ({ ...prev, sscGolden: e.target.value }))}
-                                                            className="w-4 h-4 text-blue-600"
-                                                        />
-                                                        <span className="text-sm">No</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {/* HSC Result */}
-                                        <div className='block md:hidden w-full'>
-                                            <label className="block text-sm font-medium mb-2">
-                                                HSC Result/Equivalent
-                                            </label>
-                                            <input
-                                                type="number"
-                                                step="0.01"
-                                                min="0"
-                                                max="5"
-                                                value={formData.hscResult}
-                                                onChange={(e) => setFormData(prev => ({ ...prev, hscResult: e.target.value }))}
-                                                className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                                                placeholder="Enter GPA out of 5.00"
-                                            />
-                                        </div>
-                                        {/* Golden GPA Option - Only shows if GPA is 5.00 */}
-                                        {showGoldenOption(formData.hscResult) && (
-                                            <div className="w-full flex items-center gap-2 bg-gray-50 border border-gray-100 px-2 py-3 rounded-lg">
-                                                <Star className="w-4 h-4 text-yellow-500" />
-                                                <span className="text-sm font-medium">Golden GPA?</span>
-                                                <div className="flex items-center gap-3 ml-auto">
-                                                    <label className="flex items-center gap-2 cursor-pointer">
-                                                        <input
-                                                            type="radio"
-                                                            name="hscGolden"
-                                                            value="yes"
-                                                            checked={formData.hscGolden === 'yes'}
-                                                            onChange={(e) => setFormData(prev => ({ ...prev, hscGolden: e.target.value }))}
-                                                            className="w-4 h-4 text-blue-600"
-                                                        />
-                                                        <span className="text-sm">Yes</span>
-                                                    </label>
-                                                    <label className="flex items-center gap-2 cursor-pointer">
-                                                        <input
-                                                            type="radio"
-                                                            name="hscGolden"
-                                                            value="no"
-                                                            checked={formData.hscGolden === 'no'}
-                                                            onChange={(e) => setFormData(prev => ({ ...prev, hscGolden: e.target.value }))}
-                                                            className="w-4 h-4 text-blue-600"
-                                                        />
-                                                        <span className="text-sm">No</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </>
-                            ) : (
-                                // Diploma GPA Input
-                                <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                        Diploma GPA
-                                    </label>
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        max="4"
-                                        value={formData.dipGpa}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, dipGpa: e.target.value }))}
-                                        className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="Enter Diploma GPA out of 4.00"
-                                    />
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Additional Information */}
-                        <div className="space-y-4">
-                            <h3 className="font-medium flex items-center gap-2">
-                                <Users className="w-4 h-4 text-blue-600" />
-                                Additional Information
-                            </h3>
-
-                            {/* Board Type - Now the main education board selection */}
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium">Education Board/University</label>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 no-animation-grid">
-                                    {educationBoardTypes.map((type) => (
-                                        <button
-                                            key={type.id}
-                                            type="button"
-                                            onClick={() => {
-                                                setFormData(prev => ({
-                                                    ...prev,
-                                                    educationBoard: type.id
-                                                }));
-                                            }}
-                                            className={`px-3 py-3 rounded-lg border transition-all flex items-center justify-center gap-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.educationBoard === type.id
-                                                ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                                : 'border-gray-200 hover:border-blue-300 text-gray-500'
-                                                }`}
-                                        >
-                                            {type.icon}
-                                            <span className="text-sm text-center">{type.name}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Faculty Selection */}
+                    <div className='p-4.5 md:p-6'>
+                        <div className="space-y-6">
+                            {/* Program Selection */}
                             <CustomSelect
-                                label="Faculty"
-                                value={formData.faculty}
-                                options={faculties}
-                                onChange={(value) => {
-                                    setFormData(prev => ({ ...prev, faculty: value }));
-                                    setOpenSelect(null);
-                                }}
+                                label="Select Program"
+                                value={formData.program}
+                                options={programs}
+                                onChange={handleProgramSelect}
                                 icon={GraduationCap}
-                                placeholder="Select faculty"
+                                placeholder="Choose your program"
+                                optionRenderer={(program, isSelected) => (
+                                    <div className="flex items-center gap-3 w-full">
+                                        <div className="flex-1">
+                                            <div className={`font-medium ${isSelected ? 'text-white' : ''}`}>
+                                                {program.name}
+                                            </div>
+                                        </div>
+                                        {isSelected && (
+                                            <CheckCircle className="w-5 h-5 text-white ml-auto" />
+                                        )}
+                                    </div>
+                                )}
                             />
 
-                            {/* Gender Selection */}
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium">Gender</label>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 no-animation-grid">
-                                    {genderOptions.map((g) => (
-                                        <button
-                                            key={g.id}
-                                            type="button"
-                                            onClick={() => {
-                                                setFormData(prev => ({ ...prev, gender: g.id }));
-                                                setOpenSelect(null);
-                                            }}
-                                            className={`px-4 py-2.5 rounded-lg border transition-all flex items-center justify-center gap-2 capitalize focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.gender === g.id
-                                                ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                                : 'border-gray-200 hover:border-blue-300 text-gray-600'
-                                                }`}
-                                        >
-                                            {g.icon}
-                                            {g.name}
-                                        </button>
-                                    ))}
+                            {/* Program Details - Shows after selection */}
+                            {selectedProgram && showProgramDetails && (
+                                <div className="bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100 animate-fadeIn">
+                                    <h3 className="font-semibold mb-3">Program Details</h3>
+                                    <div className="grid grid-cols-3 gap-4 no-animation-grid">
+                                        <div className="text-center">
+                                            <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
+                                                <Clock className="w-5 h-5 text-blue-600" />
+                                            </div>
+                                            <div className="text-xs">Duration</div>
+                                            <div className="font-bold">{selectedProgram.duration}</div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
+                                                <BookOpen className="w-5 h-5 text-indigo-600" />
+                                            </div>
+                                            <div className="text-xs">Credits</div>
+                                            <div className="font-bold">{selectedProgram.credits}</div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
+                                                <DollarSign className="w-5 h-5 text-green-600" />
+                                            </div>
+                                            <div className="text-xs">Total Fees</div>
+                                            <div className="font-bold">৳{selectedProgram.fees.toLocaleString()}</div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                            )}
 
-                        {/* Others Field - Player Status */}
-                        <div className="space-y-4">
-                            <h3 className="font-medium flex items-center gap-2">
-                                <Trophy className="w-4 h-4 text-blue-600" />
-                                Others
-                            </h3>
-
+                            {/* Education Status */}
                             <div className="space-y-2">
-                                <label className="block text-sm font-medium">
-                                    Are you a player?
-                                </label>
+                                <label className="block text-sm font-medium">Education Status</label>
                                 <div className="grid grid-cols-2 gap-3 no-animation-grid">
-                                    {['yes', 'no'].map((status) => (
+                                    {[
+                                        { id: 'general', name: 'General', icon: <BookOpen className="w-4 h-4" /> },
+                                        { id: 'diploma', name: 'Diploma', icon: <Award className="w-4 h-4" /> }
+                                    ].map((status) => (
                                         <button
-                                            key={status}
+                                            key={status.id}
                                             type="button"
                                             onClick={() => {
-                                                setFormData(prev => ({ ...prev, playerStatus: status }));
+                                                setFormData(prev => ({ ...prev, eduStatus: status.id }));
                                                 setOpenSelect(null);
                                             }}
-                                            className={`px-4 py-2.5 rounded-lg border transition-all capitalize flex items-center justify-center gap-2 focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.playerStatus === status
+                                            className={`px-4 py-2.5 rounded-lg border transition-all flex items-center justify-center gap-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${formData.eduStatus === status.id
                                                 ? 'border-blue-600 bg-blue-50 text-blue-700'
                                                 : 'border-gray-200 hover:border-blue-300 text-gray-600'
                                                 }`}
                                         >
-                                            {status === 'yes' ? <Trophy className="w-4 h-4" /> : <Users className="w-4 h-4" />}
-                                            {status}
+                                            {status.icon}
+                                            {status.name}
                                         </button>
                                     ))}
                                 </div>
                             </div>
 
-                            {/* Player Category - Shows only if player status is yes */}
-                            {formData.playerStatus === 'yes' && (
-                                <div className="animate-slideDown">
-                                    <label className="block text-sm font-medium mb-2">
-                                        Player Category
-                                    </label>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 md:gap-3 no-animation-grid text-xs md:text-sm">
-                                        {playerCategories.map((cat) => (
+                            {/* Academic Results Section */}
+                            <div className="space-y-4">
+                                <h3 className="font-medium flex items-center gap-2">
+                                    <Award className="w-4 h-4 text-blue-600" />
+                                    Academic Results
+                                </h3>
+
+                                {formData.eduStatus === 'general' ? (
+                                    <>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 place-items-center justify-items-center gap-3 no-animation-grid">
+                                            {/* SSC Result */}
+                                            <div className='w-full'>
+                                                <label className="block text-sm font-medium mb-2">
+                                                    SSC Result/Equivalent
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    min="0"
+                                                    max="5"
+                                                    value={formData.sscResult}
+                                                    onChange={(e) => setFormData(prev => ({ ...prev, sscResult: e.target.value }))}
+                                                    className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                                    placeholder="Enter GPA out of 5.00"
+                                                />
+                                            </div>
+
+                                            {/* HSC Result */}
+                                            <div className='hidden md:block w-full'>
+                                                <label className="block text-sm font-medium mb-2">
+                                                    HSC Result/Equivalent
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    min="0"
+                                                    max="5"
+                                                    value={formData.hscResult}
+                                                    onChange={(e) => setFormData(prev => ({ ...prev, hscResult: e.target.value }))}
+                                                    className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                                    placeholder="Enter GPA out of 5.00"
+                                                />
+                                            </div>
+
+                                            {/* Golden GPA Option - Only shows if GPA is 5.00 */}
+                                            {showGoldenOption(formData.sscResult) && (
+                                                <div className="w-full flex items-center gap-2 bg-gray-50 border border-gray-100 px-2 py-3 rounded-lg">
+                                                    <Star className="w-4 h-4 text-yellow-500" />
+                                                    <span className="text-sm font-medium">Golden GPA?</span>
+                                                    <div className="flex items-center gap-3 ml-auto">
+                                                        <label className="flex items-center gap-2 cursor-pointer">
+                                                            <input
+                                                                type="radio"
+                                                                name="sscGolden"
+                                                                value="yes"
+                                                                checked={formData.sscGolden === 'yes'}
+                                                                onChange={(e) => setFormData(prev => ({ ...prev, sscGolden: e.target.value }))}
+                                                                className="w-4 h-4 text-blue-600"
+                                                            />
+                                                            <span className="text-sm">Yes</span>
+                                                        </label>
+                                                        <label className="flex items-center gap-2 cursor-pointer">
+                                                            <input
+                                                                type="radio"
+                                                                name="sscGolden"
+                                                                value="no"
+                                                                checked={formData.sscGolden === 'no'}
+                                                                onChange={(e) => setFormData(prev => ({ ...prev, sscGolden: e.target.value }))}
+                                                                className="w-4 h-4 text-blue-600"
+                                                            />
+                                                            <span className="text-sm">No</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* HSC Result */}
+                                            <div className='block md:hidden w-full'>
+                                                <label className="block text-sm font-medium mb-2">
+                                                    HSC Result/Equivalent
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    min="0"
+                                                    max="5"
+                                                    value={formData.hscResult}
+                                                    onChange={(e) => setFormData(prev => ({ ...prev, hscResult: e.target.value }))}
+                                                    className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                                    placeholder="Enter GPA out of 5.00"
+                                                />
+                                            </div>
+                                            {/* Golden GPA Option - Only shows if GPA is 5.00 */}
+                                            {showGoldenOption(formData.hscResult) && (
+                                                <div className="w-full flex items-center gap-2 bg-gray-50 border border-gray-100 px-2 py-3 rounded-lg">
+                                                    <Star className="w-4 h-4 text-yellow-500" />
+                                                    <span className="text-sm font-medium">Golden GPA?</span>
+                                                    <div className="flex items-center gap-3 ml-auto">
+                                                        <label className="flex items-center gap-2 cursor-pointer">
+                                                            <input
+                                                                type="radio"
+                                                                name="hscGolden"
+                                                                value="yes"
+                                                                checked={formData.hscGolden === 'yes'}
+                                                                onChange={(e) => setFormData(prev => ({ ...prev, hscGolden: e.target.value }))}
+                                                                className="w-4 h-4 text-blue-600"
+                                                            />
+                                                            <span className="text-sm">Yes</span>
+                                                        </label>
+                                                        <label className="flex items-center gap-2 cursor-pointer">
+                                                            <input
+                                                                type="radio"
+                                                                name="hscGolden"
+                                                                value="no"
+                                                                checked={formData.hscGolden === 'no'}
+                                                                onChange={(e) => setFormData(prev => ({ ...prev, hscGolden: e.target.value }))}
+                                                                className="w-4 h-4 text-blue-600"
+                                                            />
+                                                            <span className="text-sm">No</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </>
+                                ) : (
+                                    // Diploma GPA Input
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">
+                                            Diploma GPA
+                                        </label>
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            max="4"
+                                            value={formData.dipGpa}
+                                            onChange={(e) => setFormData(prev => ({ ...prev, dipGpa: e.target.value }))}
+                                            className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="Enter Diploma GPA out of 4.00"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Additional Information */}
+                            <div className="space-y-4">
+                                <h3 className="font-medium flex items-center gap-2">
+                                    <Users className="w-4 h-4 text-blue-600" />
+                                    Additional Information
+                                </h3>
+
+                                {/* Board Type - Now the main education board selection */}
+                                <div className="space-y-2">
+                                    <label className="block text-sm font-medium">Education Board/University</label>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 no-animation-grid">
+                                        {educationBoardTypes.map((type) => (
                                             <button
-                                                key={cat.id}
+                                                key={type.id}
                                                 type="button"
                                                 onClick={() => {
-                                                    setFormData(prev => ({ ...prev, playerCategory: cat.id }));
-                                                    setOpenSelect(null);
+                                                    setFormData(prev => ({
+                                                        ...prev,
+                                                        educationBoard: type.id
+                                                    }));
                                                 }}
-                                                className={`flex items-center justify-between p-1.5 rounded-lg border transition-all focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.playerCategory == cat.id
-                                                    ? 'border-blue-600 bg-blue-50'
-                                                    : 'border-gray-200 hover:border-blue-300'
+                                                className={`px-3 py-3 rounded-lg border transition-all flex items-center justify-center gap-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.educationBoard === type.id
+                                                    ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                                    : 'border-gray-200 hover:border-blue-300 text-gray-500'
                                                     }`}
                                             >
-                                                <div className="flex items-center gap-2">
-                                                    <div className={`hidden md:block p-1.5 rounded-lg ${formData.playerCategory == cat.id
-                                                        ? 'bg-blue-600 text-white'
-                                                        : 'bg-gray-100'
-                                                        }`}>
-                                                        {cat.icon}
-                                                    </div>
-                                                    <span className="font-medium">{cat.name}</span>
-                                                </div>
-                                                <span className={`p-1 rounded-lg font-semibold ${formData.playerCategory == cat.id
-                                                    ? 'bg-blue-600 text-white'
-                                                    : 'bg-blue-100 text-blue-700'
-                                                    }`}>
-                                                    {cat.waiver}%
-                                                </span>
+                                                {type.icon}
+                                                <span className="text-sm text-center">{type.name}</span>
                                             </button>
                                         ))}
                                     </div>
                                 </div>
-                            )}
-                        </div>
 
-                        {/* Calculate Button */}
-                        <button
-                            onClick={calculateWaiver}
-                            disabled={!formData.program || !formData.gender || (!formData.sscResult && !formData.dipGpa)}
-                            className="w-full bg-indigo-800 text-white p-2.5 rounded-lg font-semibold text-lg hover:bg-indigo-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group focus:outline-none focus:ring-1 focus:ring-blue-500"
-                        >
-                            Calculate Waiver
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        </button>
+                                {/* Faculty Selection */}
+                                <CustomSelect
+                                    label="Faculty"
+                                    value={formData.faculty}
+                                    options={faculties}
+                                    onChange={(value) => {
+                                        setFormData(prev => ({ ...prev, faculty: value }));
+                                        setOpenSelect(null);
+                                    }}
+                                    icon={GraduationCap}
+                                    placeholder="Select faculty"
+                                />
+
+                                {/* Gender Selection */}
+                                <div className="space-y-2">
+                                    <label className="block text-sm font-medium">Gender</label>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 no-animation-grid">
+                                        {genderOptions.map((g) => (
+                                            <button
+                                                key={g.id}
+                                                type="button"
+                                                onClick={() => {
+                                                    setFormData(prev => ({ ...prev, gender: g.id }));
+                                                    setOpenSelect(null);
+                                                }}
+                                                className={`px-4 py-2.5 rounded-lg border transition-all flex items-center justify-center gap-2 capitalize focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.gender === g.id
+                                                    ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                                    : 'border-gray-200 hover:border-blue-300 text-gray-600'
+                                                    }`}
+                                            >
+                                                {g.icon}
+                                                {g.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Others Field - Player Status */}
+                            <div className="space-y-4">
+                                <h3 className="font-medium flex items-center gap-2">
+                                    <Trophy className="w-4 h-4 text-blue-600" />
+                                    Others
+                                </h3>
+
+                                <div className="space-y-2">
+                                    <label className="block text-sm font-medium">
+                                        Are you a player?
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-3 no-animation-grid">
+                                        {['yes', 'no'].map((status) => (
+                                            <button
+                                                key={status}
+                                                type="button"
+                                                onClick={() => {
+                                                    setFormData(prev => ({ ...prev, playerStatus: status }));
+                                                    setOpenSelect(null);
+                                                }}
+                                                className={`px-4 py-2.5 rounded-lg border transition-all capitalize flex items-center justify-center gap-2 focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.playerStatus === status
+                                                    ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                                    : 'border-gray-200 hover:border-blue-300 text-gray-600'
+                                                    }`}
+                                            >
+                                                {status === 'yes' ? <Trophy className="w-4 h-4" /> : <Users className="w-4 h-4" />}
+                                                {status}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Player Category - Shows only if player status is yes */}
+                                {formData.playerStatus === 'yes' && (
+                                    <div className="animate-slideDown">
+                                        <label className="block text-sm font-medium mb-2">
+                                            Player Category
+                                        </label>
+                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 md:gap-3 no-animation-grid text-xs md:text-sm">
+                                            {playerCategories.map((cat) => (
+                                                <button
+                                                    key={cat.id}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setFormData(prev => ({ ...prev, playerCategory: cat.id }));
+                                                        setOpenSelect(null);
+                                                    }}
+                                                    className={`flex items-center justify-between p-1.5 rounded-lg border transition-all focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.playerCategory == cat.id
+                                                        ? 'border-blue-600 bg-blue-50'
+                                                        : 'border-gray-200 hover:border-blue-300'
+                                                        }`}
+                                                >
+                                                    <div className="flex items-center gap-2">
+                                                        <div className={`hidden md:block p-1.5 rounded-lg ${formData.playerCategory == cat.id
+                                                            ? 'bg-blue-600 text-white'
+                                                            : 'bg-gray-100'
+                                                            }`}>
+                                                            {cat.icon}
+                                                        </div>
+                                                        <span className="font-medium">{cat.name}</span>
+                                                    </div>
+                                                    <span className={`p-1 rounded-lg font-semibold ${formData.playerCategory == cat.id
+                                                        ? 'bg-blue-600 text-white'
+                                                        : 'bg-blue-100 text-blue-700'
+                                                        }`}>
+                                                        {cat.waiver}%
+                                                    </span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Calculate Button */}
+                            <button
+                                onClick={calculateWaiver}
+                                disabled={!formData.program || !formData.gender || (!formData.sscResult && !formData.dipGpa)}
+                                className="w-full bg-blue-800 text-white p-2.5 rounded-lg font-semibold text-lg hover:bg-indigo-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            >
+                                Calculate Waiver
+                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 {/* Right Side - Result */}
                 <div className="lg:sticky lg:top-8 h-fit">
                     {result ? (
-                        <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 animate-fadeIn lg:mt-12">
-                            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                        <div className="bg-linear-to-tr from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg p-6 border border-gray-200 animate-fadeIn lg:mt-12">
+                            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                                 <div className="w-1 h-6 bg-linear-to-b from-green-600 to-emerald-600 rounded-full"></div>
                                 Your Waiver Results
                             </h2>
@@ -692,19 +742,19 @@ const FinalWaiver = () => {
                                     <div className="text-6xl font-bold text-green-600 mb-2">
                                         {result.final}%
                                     </div>
-                                    <p className="text-gray-600">You are eligible for this waiver</p>
+                                    <p>You are eligible for this waiver</p>
                                 </div>
                             </div>
 
                             {/* Waiver Breakdown */}
                             <div className="space-y-3">
-                                <h3 className="font-medium text-gray-700 mb-3">Waiver Breakdown</h3>
+                                <h3 className="font-medium mb-3">Waiver Breakdown</h3>
 
                                 {result.breakdown.female > 0 && (
                                     <div className="flex items-center justify-between p-3 bg-pink-50 rounded-xl border border-pink-100">
                                         <div className="flex items-center gap-3">
                                             <Heart className="w-5 h-5 text-pink-600" />
-                                            <span className="text-gray-700">Female Quota</span>
+                                            <span>Female Quota</span>
                                         </div>
                                         <span className="font-bold text-pink-600">{result.breakdown.female}%</span>
                                     </div>
@@ -714,7 +764,7 @@ const FinalWaiver = () => {
                                     <div className="flex items-center justify-between p-3 bg-blue-50 rounded-xl border border-blue-100">
                                         <div className="flex items-center gap-3">
                                             <Award className="w-5 h-5 text-blue-600" />
-                                            <span className="text-gray-700">Result Based</span>
+                                            <span>Result Based</span>
                                         </div>
                                         <span className="font-bold text-blue-600">{result.breakdown.result}%</span>
                                     </div>
@@ -724,7 +774,7 @@ const FinalWaiver = () => {
                                     <div className="flex items-center justify-between p-3 bg-orange-50 rounded-xl border border-orange-100">
                                         <div className="flex items-center gap-3">
                                             <Trophy className="w-5 h-5 text-orange-600" />
-                                            <span className="text-gray-700">Player Waiver</span>
+                                            <span>Player Waiver</span>
                                         </div>
                                         <span className="font-bold text-orange-600">{result.breakdown.player}%</span>
                                     </div>
@@ -734,7 +784,7 @@ const FinalWaiver = () => {
                                     <div className="flex items-center justify-between p-3 bg-purple-50 rounded-xl border border-purple-100">
                                         <div className="flex items-center gap-3">
                                             <GraduationCap className="w-5 h-5 text-purple-600" />
-                                            <span className="text-gray-700">Diploma Waiver</span>
+                                            <span>Diploma Waiver</span>
                                         </div>
                                         <span className="font-bold text-purple-600">{result.breakdown.diploma}%</span>
                                     </div>
@@ -793,19 +843,19 @@ const FinalWaiver = () => {
                                     setSelectedProgram(null);
                                     setShowProgramDetails(false);
                                 }}
-                                className="w-full mt-6 bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                className="w-full mt-6 bg-blue-200 py-2.5 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition-all"
                             >
                                 New Calculation
                             </button>
                         </div>
                     ) : (
-                        <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 h-full flex items-center justify-center lg:mt-12">
+                            <div className="bg-linear-to-tr from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg p-6 border border-gray-200 h-full flex items-center justify-center lg:mt-12">
                             <div className="text-center py-12">
                                 <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <GraduationCap className="w-10 h-10 text-blue-600" />
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-800 mb-2">Ready to Calculate?</h3>
-                                <p className="text-gray-500 max-w-sm">
+                                <h3 className="text-xl font-bold mb-2">Ready to Calculate?</h3>
+                                <p className="max-w-sm">
                                     Fill in your information on the left to see your eligible waivers
                                 </p>
                             </div>
@@ -814,25 +864,26 @@ const FinalWaiver = () => {
                 </div>
             </div>
 
-            <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes slideDown {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
-        }
-        
-        .animate-slideDown {
-          animation: slideDown 0.3s ease-out;
-        }
-      `}</style>
+            {/* <style jsx>{`
+            @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+            }
+            
+            @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+            }
+            
+            .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+            }
+            
+            .animate-slideDown {
+            animation: slideDown 0.3s ease-out;
+            }
+        `}</style> */}
+
         </div>
     );
 };
