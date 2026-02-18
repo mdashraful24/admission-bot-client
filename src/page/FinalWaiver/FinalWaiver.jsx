@@ -320,7 +320,7 @@ const FinalWaiver = () => {
                         </h3>
                     </div>
                     <div>
-                        <p className="md:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
+                        <p className="md:text-lg lg:text-xl max-w-4xl mx-auto leading-relaxed">
                             Discover your tuition fees through applicable waivers and scholarships. Get instant details of your admission payments and total savings.
                         </p>
                     </div>
