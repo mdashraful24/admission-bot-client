@@ -1,10 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-    GraduationCap, Award, Users, Target, Shield, Heart, Users2,
-    Baby, Sparkles, BookOpen, Medal, ChevronDown, ChevronUp,
-    Calendar, Clock, DollarSign, CheckCircle, XCircle,
-    User, Flag, Trophy, Camera, Music, Palette, ArrowRight
-} from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { GraduationCap, Award, Users, Target, Shield, Heart, BookOpen, Medal, ChevronDown, ChevronUp, Clock, DollarSign, CheckCircle, Flag, Trophy, ArrowRight, Star } from 'lucide-react';
 
 const FinalWaiver = () => {
     const [formData, setFormData] = useState({
@@ -18,7 +13,7 @@ const FinalWaiver = () => {
         playerStatus: 'no',
         playerCategory: '',
         eduStatus: 'general',
-        faculty: 'fse',
+        faculty: '',
         dipGpa: ''
     });
 
@@ -67,10 +62,11 @@ const FinalWaiver = () => {
         }
     ];
 
-    const educationBoards = [
-        'Dhaka', 'Rajshahi', 'Comilla', 'Jessore',
-        'Chittagong', 'Barisal', 'Sylhet', 'Dinajpur',
-        'Mymensingh', 'Technical', 'Madrasah'
+    // Education Board Types (now used as the main selection)
+    const educationBoardTypes = [
+        { id: 'general', name: 'General Education Board', icon: <BookOpen className="w-4 h-4" /> },
+        { id: 'technical', name: 'Technical Board', icon: <Award className="w-4 h-4" /> },
+        { id: 'madrasha', name: 'Madrasha Board', icon: <GraduationCap className="w-4 h-4" /> }
     ];
 
     const playerCategories = [
@@ -88,6 +84,18 @@ const FinalWaiver = () => {
         { id: 'fhss', name: 'Faculty of Humanities & Social Sciences' },
         { id: 'fls', name: 'Faculty of Law' }
     ];
+
+    // Gender options
+    const genderOptions = [
+        { id: 'male', name: 'Male', icon: <Users className="w-4 h-4" /> },
+        { id: 'female', name: 'Female', icon: <Heart className="w-4 h-4" /> },
+        { id: 'other', name: 'Other', icon: <Users className="w-4 h-4" /> }
+    ];
+
+    // Check if GPA is 5.00 to show Golden option
+    const showGoldenOption = (gpa) => {
+        return parseFloat(gpa) === 5.0;
+    };
 
     // Handle program selection
     const handleProgramSelect = (programId) => {
@@ -168,7 +176,7 @@ const FinalWaiver = () => {
         });
     };
 
-    // Custom Select Component
+    // Custom Select Component with focus ring
     const CustomSelect = ({
         label,
         value,
@@ -186,17 +194,17 @@ const FinalWaiver = () => {
 
         return (
             <div className="relative">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium mb-2">
                     {label}
                 </label>
                 <div
                     className={`relative cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                     onClick={() => !disabled && setIsOpen(!isOpen)}
                 >
-                    <div className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl flex items-center justify-between hover:border-blue-400 transition-all">
+                    <div className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg flex items-center justify-between hover:border-blue-400 transition-all focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
                         <div className="flex items-center gap-3">
                             {Icon && <Icon className="w-5 h-5 text-gray-400" />}
-                            <span className={value ? 'text-gray-900' : 'text-gray-400'}>
+                            <span className={value ? '' : 'text-gray-400'}>
                                 {selectedOption
                                     ? (typeof selectedOption === 'string'
                                         ? selectedOption
@@ -224,11 +232,20 @@ const FinalWaiver = () => {
                                     return (
                                         <div
                                             key={index}
-                                            className="px-4 py-3 hover:bg-blue-50 cursor-pointer flex items-center gap-3 transition-colors"
+                                            className="px-4 py-2.5 text-sm hover:bg-blue-50 cursor-pointer flex items-center gap-3 transition-colors focus:outline-none focus:bg-blue-50"
                                             onClick={() => {
                                                 onChange(optionValue);
                                                 setIsOpen(false);
                                             }}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                    onChange(optionValue);
+                                                    setIsOpen(false);
+                                                }
+                                            }}
+                                            tabIndex={0}
+                                            role="option"
+                                            aria-selected={value === optionValue}
                                         >
                                             {optionRenderer ? optionRenderer(option) : (
                                                 <>
@@ -272,10 +289,10 @@ const FinalWaiver = () => {
             </div>
 
             {/* Main Content - Left Form, Right Result */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-8 no-animation-grid">
                 {/* Left Side - Form */}
                 <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 lg:mt-12">
-                    <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                         <div className="w-1 h-6 bg-linear-to-b from-blue-600 to-indigo-600 rounded-full"></div>
                         Student Information
                     </h2>
@@ -291,19 +308,8 @@ const FinalWaiver = () => {
                             placeholder="Choose your program"
                             optionRenderer={(program) => (
                                 <div className="flex items-center gap-3 w-full">
-                                    <div className="p-1.5 bg-blue-50 rounded-lg">
-                                        {program.icon}
-                                    </div>
                                     <div className="flex-1">
-                                        <div className="font-medium text-gray-900">{program.name}</div>
-                                        <div className="text-xs text-gray-500 flex items-center gap-2 mt-1">
-                                            <span className="flex items-center gap-1">
-                                                <Clock className="w-3 h-3" /> {program.duration}
-                                            </span>
-                                            <span className="flex items-center gap-1">
-                                                <BookOpen className="w-3 h-3" /> {program.credits} Credits
-                                            </span>
-                                        </div>
+                                        <div className="font-medium">{program.name}</div>
                                     </div>
                                 </div>
                             )}
@@ -311,29 +317,29 @@ const FinalWaiver = () => {
 
                         {/* Program Details - Shows after selection */}
                         {selectedProgram && showProgramDetails && (
-                            <div className="bg-linear-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100 animate-fadeIn">
-                                <h3 className="font-semibold text-gray-800 mb-3">Program Details</h3>
-                                <div className="grid grid-cols-3 gap-4">
+                            <div className="bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100 animate-fadeIn">
+                                <h3 className="font-semibold mb-3">Program Details</h3>
+                                <div className="grid grid-cols-3 gap-4 no-animation-grid">
                                     <div className="text-center">
                                         <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
                                             <Clock className="w-5 h-5 text-blue-600" />
                                         </div>
-                                        <div className="text-xs text-gray-500">Duration</div>
-                                        <div className="font-bold text-gray-800">{selectedProgram.duration}</div>
+                                        <div className="text-xs">Duration</div>
+                                        <div className="font-bold">{selectedProgram.duration}</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
                                             <BookOpen className="w-5 h-5 text-indigo-600" />
                                         </div>
-                                        <div className="text-xs text-gray-500">Credits</div>
-                                        <div className="font-bold text-gray-800">{selectedProgram.credits}</div>
+                                        <div className="text-xs">Credits</div>
+                                        <div className="font-bold">{selectedProgram.credits}</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
                                             <DollarSign className="w-5 h-5 text-green-600" />
                                         </div>
-                                        <div className="text-xs text-gray-500">Total Fees</div>
-                                        <div className="font-bold text-gray-800">৳{selectedProgram.fees.toLocaleString()}</div>
+                                        <div className="text-xs">Total Fees</div>
+                                        <div className="font-bold">৳{selectedProgram.fees.toLocaleString()}</div>
                                     </div>
                                 </div>
                             </div>
@@ -341,22 +347,26 @@ const FinalWaiver = () => {
 
                         {/* Education Status */}
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">Education Status</label>
-                            <div className="grid grid-cols-2 gap-3">
-                                {['general', 'diploma'].map((status) => (
+                            <label className="block text-sm font-medium">Education Status</label>
+                            <div className="grid grid-cols-2 gap-3 no-animation-grid">
+                                {[
+                                    { id: 'general', name: 'General', icon: <BookOpen className="w-4 h-4" /> },
+                                    { id: 'diploma', name: 'Diploma', icon: <Award className="w-4 h-4" /> }
+                                ].map((status) => (
                                     <button
-                                        key={status}
+                                        key={status.id}
                                         type="button"
                                         onClick={() => {
-                                            setFormData(prev => ({ ...prev, eduStatus: status }));
+                                            setFormData(prev => ({ ...prev, eduStatus: status.id }));
                                             setOpenSelect(null);
                                         }}
-                                        className={`px-4 py-3 rounded-xl border-2 transition-all ${formData.eduStatus === status
+                                        className={`px-4 py-2.5 rounded-lg border transition-all flex items-center justify-center gap-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${formData.eduStatus === status.id
                                             ? 'border-blue-600 bg-blue-50 text-blue-700'
                                             : 'border-gray-200 hover:border-blue-300 text-gray-600'
                                             }`}
                                     >
-                                        {status === 'general' ? 'General' : 'Diploma'}
+                                        {status.icon}
+                                        {status.name}
                                     </button>
                                 ))}
                             </div>
@@ -364,114 +374,144 @@ const FinalWaiver = () => {
 
                         {/* Academic Results Section */}
                         <div className="space-y-4">
-                            <h3 className="font-medium text-gray-700 flex items-center gap-2">
+                            <h3 className="font-medium flex items-center gap-2">
                                 <Award className="w-4 h-4 text-blue-600" />
                                 Academic Results
                             </h3>
 
                             {formData.eduStatus === 'general' ? (
                                 <>
-                                    {/* SSC Result */}
-                                    <div className="space-y-3">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 place-items-center justify-items-center gap-3 no-animation-grid">
+                                        {/* SSC Result */}
+                                        <div className='w-full'>
+                                            <label className="block text-sm font-medium mb-2">
                                                 SSC Result/Equivalent
                                             </label>
                                             <input
                                                 type="number"
                                                 step="0.01"
+                                                min="0"
+                                                max="5"
                                                 value={formData.sscResult}
                                                 onChange={(e) => setFormData(prev => ({ ...prev, sscResult: e.target.value }))}
-                                                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                                placeholder="Enter GPA (e.g., 5.00)"
+                                                className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                                placeholder="Enter GPA out of 5.00"
                                             />
                                         </div>
 
-                                        {/* Golden GPA Option */}
-                                        <div className="flex items-center gap-4 bg-gray-50 p-3 rounded-xl">
-                                            <span className="text-sm text-gray-600">Golden GPA?</span>
-                                            <label className="flex items-center gap-2 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="sscGolden"
-                                                    value="yes"
-                                                    checked={formData.sscGolden === 'yes'}
-                                                    onChange={(e) => setFormData(prev => ({ ...prev, sscGolden: e.target.value }))}
-                                                    className="w-4 h-4 text-blue-600"
-                                                />
-                                                <span className="text-sm">Yes</span>
-                                            </label>
-                                            <label className="flex items-center gap-2 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="sscGolden"
-                                                    value="no"
-                                                    checked={formData.sscGolden === 'no'}
-                                                    onChange={(e) => setFormData(prev => ({ ...prev, sscGolden: e.target.value }))}
-                                                    className="w-4 h-4 text-blue-600"
-                                                />
-                                                <span className="text-sm">No</span>
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    {/* HSC Result */}
-                                    <div className="space-y-3">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        {/* HSC Result */}
+                                        <div className='hidden md:block w-full'>
+                                            <label className="block text-sm font-medium mb-2">
                                                 HSC Result/Equivalent
                                             </label>
                                             <input
                                                 type="number"
                                                 step="0.01"
+                                                min="0"
+                                                max="5"
                                                 value={formData.hscResult}
                                                 onChange={(e) => setFormData(prev => ({ ...prev, hscResult: e.target.value }))}
-                                                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                                placeholder="Enter GPA (e.g., 5.00)"
+                                                className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                                placeholder="Enter GPA out of 5.00"
                                             />
                                         </div>
 
-                                        {/* Golden GPA Option */}
-                                        <div className="flex items-center gap-4 bg-gray-50 p-3 rounded-xl">
-                                            <span className="text-sm text-gray-600">Golden GPA?</span>
-                                            <label className="flex items-center gap-2 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="hscGolden"
-                                                    value="yes"
-                                                    checked={formData.hscGolden === 'yes'}
-                                                    onChange={(e) => setFormData(prev => ({ ...prev, hscGolden: e.target.value }))}
-                                                    className="w-4 h-4 text-blue-600"
-                                                />
-                                                <span className="text-sm">Yes</span>
+                                        {/* Golden GPA Option - Only shows if GPA is 5.00 */}
+                                        {showGoldenOption(formData.sscResult) && (
+                                            <div className="w-full flex items-center gap-2 bg-gray-50 border border-gray-100 px-2 py-3 rounded-lg">
+                                                <Star className="w-4 h-4 text-yellow-500" />
+                                                <span className="text-sm font-medium">Golden GPA?</span>
+                                                <div className="flex items-center gap-3 ml-auto">
+                                                    <label className="flex items-center gap-2 cursor-pointer">
+                                                        <input
+                                                            type="radio"
+                                                            name="sscGolden"
+                                                            value="yes"
+                                                            checked={formData.sscGolden === 'yes'}
+                                                            onChange={(e) => setFormData(prev => ({ ...prev, sscGolden: e.target.value }))}
+                                                            className="w-4 h-4 text-blue-600"
+                                                        />
+                                                        <span className="text-sm">Yes</span>
+                                                    </label>
+                                                    <label className="flex items-center gap-2 cursor-pointer">
+                                                        <input
+                                                            type="radio"
+                                                            name="sscGolden"
+                                                            value="no"
+                                                            checked={formData.sscGolden === 'no'}
+                                                            onChange={(e) => setFormData(prev => ({ ...prev, sscGolden: e.target.value }))}
+                                                            className="w-4 h-4 text-blue-600"
+                                                        />
+                                                        <span className="text-sm">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* HSC Result */}
+                                        <div className='block md:hidden w-full'>
+                                            <label className="block text-sm font-medium mb-2">
+                                                HSC Result/Equivalent
                                             </label>
-                                            <label className="flex items-center gap-2 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="hscGolden"
-                                                    value="no"
-                                                    checked={formData.hscGolden === 'no'}
-                                                    onChange={(e) => setFormData(prev => ({ ...prev, hscGolden: e.target.value }))}
-                                                    className="w-4 h-4 text-blue-600"
-                                                />
-                                                <span className="text-sm">No</span>
-                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                min="0"
+                                                max="5"
+                                                value={formData.hscResult}
+                                                onChange={(e) => setFormData(prev => ({ ...prev, hscResult: e.target.value }))}
+                                                className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                                placeholder="Enter GPA out of 5.00"
+                                            />
                                         </div>
+                                        {/* Golden GPA Option - Only shows if GPA is 5.00 */}
+                                        {showGoldenOption(formData.hscResult) && (
+                                            <div className="w-full flex items-center gap-2 bg-gray-50 border border-gray-100 px-2 py-3 rounded-lg">
+                                                <Star className="w-4 h-4 text-yellow-500" />
+                                                <span className="text-sm font-medium">Golden GPA?</span>
+                                                <div className="flex items-center gap-3 ml-auto">
+                                                    <label className="flex items-center gap-2 cursor-pointer">
+                                                        <input
+                                                            type="radio"
+                                                            name="hscGolden"
+                                                            value="yes"
+                                                            checked={formData.hscGolden === 'yes'}
+                                                            onChange={(e) => setFormData(prev => ({ ...prev, hscGolden: e.target.value }))}
+                                                            className="w-4 h-4 text-blue-600"
+                                                        />
+                                                        <span className="text-sm">Yes</span>
+                                                    </label>
+                                                    <label className="flex items-center gap-2 cursor-pointer">
+                                                        <input
+                                                            type="radio"
+                                                            name="hscGolden"
+                                                            value="no"
+                                                            checked={formData.hscGolden === 'no'}
+                                                            onChange={(e) => setFormData(prev => ({ ...prev, hscGolden: e.target.value }))}
+                                                            className="w-4 h-4 text-blue-600"
+                                                        />
+                                                        <span className="text-sm">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </>
                             ) : (
                                 // Diploma GPA Input
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium mb-2">
                                         Diploma GPA
                                     </label>
                                     <input
                                         type="number"
                                         step="0.01"
+                                        min="0"
+                                        max="4"
                                         value={formData.dipGpa}
                                         onChange={(e) => setFormData(prev => ({ ...prev, dipGpa: e.target.value }))}
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                        placeholder="Enter Diploma GPA"
+                                        className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="Enter Diploma GPA out of 4.00"
                                     />
                                 </div>
                             )}
@@ -479,23 +519,36 @@ const FinalWaiver = () => {
 
                         {/* Additional Information */}
                         <div className="space-y-4">
-                            <h3 className="font-medium text-gray-700 flex items-center gap-2">
+                            <h3 className="font-medium flex items-center gap-2">
                                 <Users className="w-4 h-4 text-blue-600" />
                                 Additional Information
                             </h3>
 
-                            {/* Education Board */}
-                            <CustomSelect
-                                label="Education Board/University"
-                                value={formData.educationBoard}
-                                options={educationBoards}
-                                onChange={(value) => {
-                                    setFormData(prev => ({ ...prev, educationBoard: value }));
-                                    setOpenSelect(null);
-                                }}
-                                icon={BookOpen}
-                                placeholder="Select your board"
-                            />
+                            {/* Board Type - Now the main education board selection */}
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium">Education Board/University</label>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 no-animation-grid">
+                                    {educationBoardTypes.map((type) => (
+                                        <button
+                                            key={type.id}
+                                            type="button"
+                                            onClick={() => {
+                                                setFormData(prev => ({
+                                                    ...prev,
+                                                    educationBoard: type.id
+                                                }));
+                                            }}
+                                            className={`px-3 py-3 rounded-lg border transition-all flex items-center justify-center gap-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.educationBoard === type.id
+                                                ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                                : 'border-gray-200 hover:border-blue-300 text-gray-500'
+                                                }`}
+                                        >
+                                            {type.icon}
+                                            <span className="text-sm text-center">{type.name}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
 
                             {/* Faculty Selection */}
                             <CustomSelect
@@ -510,24 +563,25 @@ const FinalWaiver = () => {
                                 placeholder="Select faculty"
                             />
 
-                            {/* Gender */}
+                            {/* Gender Selection */}
                             <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700">Gender</label>
-                                <div className="grid grid-cols-3 gap-3">
-                                    {['male', 'female', 'other'].map((g) => (
+                                <label className="block text-sm font-medium">Gender</label>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 no-animation-grid">
+                                    {genderOptions.map((g) => (
                                         <button
-                                            key={g}
+                                            key={g.id}
                                             type="button"
                                             onClick={() => {
-                                                setFormData(prev => ({ ...prev, gender: g }));
+                                                setFormData(prev => ({ ...prev, gender: g.id }));
                                                 setOpenSelect(null);
                                             }}
-                                            className={`px-4 py-3 rounded-xl border-2 transition-all capitalize ${formData.gender === g
+                                            className={`px-4 py-2.5 rounded-lg border transition-all flex items-center justify-center gap-2 capitalize focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.gender === g.id
                                                 ? 'border-blue-600 bg-blue-50 text-blue-700'
                                                 : 'border-gray-200 hover:border-blue-300 text-gray-600'
                                                 }`}
                                         >
-                                            {g}
+                                            {g.icon}
+                                            {g.name}
                                         </button>
                                     ))}
                                 </div>
@@ -536,16 +590,16 @@ const FinalWaiver = () => {
 
                         {/* Others Field - Player Status */}
                         <div className="space-y-4">
-                            <h3 className="font-medium text-gray-700 flex items-center gap-2">
+                            <h3 className="font-medium flex items-center gap-2">
                                 <Trophy className="w-4 h-4 text-blue-600" />
                                 Others
                             </h3>
 
                             <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700">
+                                <label className="block text-sm font-medium">
                                     Are you a player?
                                 </label>
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-2 gap-3 no-animation-grid">
                                     {['yes', 'no'].map((status) => (
                                         <button
                                             key={status}
@@ -554,11 +608,12 @@ const FinalWaiver = () => {
                                                 setFormData(prev => ({ ...prev, playerStatus: status }));
                                                 setOpenSelect(null);
                                             }}
-                                            className={`px-4 py-3 rounded-xl border-2 transition-all capitalize ${formData.playerStatus === status
+                                            className={`px-4 py-2.5 rounded-lg border transition-all capitalize flex items-center justify-center gap-2 focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.playerStatus === status
                                                 ? 'border-blue-600 bg-blue-50 text-blue-700'
                                                 : 'border-gray-200 hover:border-blue-300 text-gray-600'
                                                 }`}
                                         >
+                                            {status === 'yes' ? <Trophy className="w-4 h-4" /> : <Users className="w-4 h-4" />}
                                             {status}
                                         </button>
                                     ))}
@@ -568,10 +623,10 @@ const FinalWaiver = () => {
                             {/* Player Category - Shows only if player status is yes */}
                             {formData.playerStatus === 'yes' && (
                                 <div className="animate-slideDown">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium mb-2">
                                         Player Category
                                     </label>
-                                    <div className="grid grid-cols-1 gap-2">
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 md:gap-3 no-animation-grid text-xs md:text-sm">
                                         {playerCategories.map((cat) => (
                                             <button
                                                 key={cat.id}
@@ -580,19 +635,21 @@ const FinalWaiver = () => {
                                                     setFormData(prev => ({ ...prev, playerCategory: cat.id }));
                                                     setOpenSelect(null);
                                                 }}
-                                                className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${formData.playerCategory == cat.id
+                                                className={`flex items-center justify-between p-1.5 rounded-lg border transition-all focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.playerCategory == cat.id
                                                     ? 'border-blue-600 bg-blue-50'
                                                     : 'border-gray-200 hover:border-blue-300'
                                                     }`}
                                             >
-                                                <div className="flex items-center gap-3">
-                                                    <div className={`p-1.5 rounded-lg ${formData.playerCategory == cat.id ? 'bg-blue-600 text-white' : 'bg-gray-100'
+                                                <div className="flex items-center gap-2">
+                                                    <div className={`hidden md:block p-1.5 rounded-lg ${formData.playerCategory == cat.id
+                                                        ? 'bg-blue-600 text-white'
+                                                        : 'bg-gray-100'
                                                         }`}>
                                                         {cat.icon}
                                                     </div>
                                                     <span className="font-medium">{cat.name}</span>
                                                 </div>
-                                                <span className={`px-2 py-1 rounded-lg text-sm font-semibold ${formData.playerCategory == cat.id
+                                                <span className={`p-1 rounded-lg font-semibold ${formData.playerCategory == cat.id
                                                     ? 'bg-blue-600 text-white'
                                                     : 'bg-blue-100 text-blue-700'
                                                     }`}>
@@ -609,7 +666,7 @@ const FinalWaiver = () => {
                         <button
                             onClick={calculateWaiver}
                             disabled={!formData.program || !formData.gender || (!formData.sscResult && !formData.dipGpa)}
-                            className="w-full bg-indigo-800 text-white p-2.5 rounded-lg font-semibold text-lg hover:bg-indigo-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group"
+                            className="w-full bg-indigo-800 text-white p-2.5 rounded-lg font-semibold text-lg hover:bg-indigo-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group focus:outline-none focus:ring-1 focus:ring-blue-500"
                         >
                             Calculate Waiver
                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -736,7 +793,7 @@ const FinalWaiver = () => {
                                     setSelectedProgram(null);
                                     setShowProgramDetails(false);
                                 }}
-                                className="w-full mt-6 bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all"
+                                className="w-full mt-6 bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all focus:outline-none focus:ring-1 focus:ring-gray-500"
                             >
                                 New Calculation
                             </button>
@@ -779,18 +836,5 @@ const FinalWaiver = () => {
         </div>
     );
 };
-
-// Star icon component for player categories
-const Star = ({ className }) => (
-    <svg
-        className={className}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-    >
-        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-    </svg>
-);
 
 export default FinalWaiver;
