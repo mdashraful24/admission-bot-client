@@ -319,11 +319,11 @@ const FinalWaiver = () => {
                             <GraduationCap className="w-7 h-7 lg:w-8 lg:h-8 text-white" />
                         </div>
                         <h3 className="text-2xl md:text-4xl lg:text-5xl font-semibold">
-                            Calculate Your DIU Waiver
+                            Calculate Your Waiver & Tuition Fees
                         </h3>
                     </div>
                     <div>
-                        <p className="md:text-lg lg:text-xl max-w-4xl mx-auto leading-relaxed">
+                        <p className="md:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
                             Discover your tuition fees through applicable waivers and scholarships. Get instant details of your admission payments and total savings.
                         </p>
                     </div>

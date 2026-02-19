@@ -4,7 +4,6 @@ import RootLayout from "../Layout/RootLayout";
 import Home from "../page/Home/Home";
 import EligibilityCalculator from "../page/EligibilityCalculator/EligibilityCalculator";
 import FinalWaiver from "../page/FinalWaiver/FinalWaiver";
-import TuitionFee from "../page/TuitionFee/TuitionFee";
 
 export const router = createBrowserRouter([
     {
@@ -13,8 +12,7 @@ export const router = createBrowserRouter([
         children: [
             { index: true, Component: Home },
             { path: "eligibility-calculator", Component: EligibilityCalculator },
-            { path: "waiver-calculator", Component: FinalWaiver },
-            { path: "tuition-fee-calculator", Component: TuitionFee },
+            { path: "waiver-calculator", Component: FinalWaiver }
         ]
     },
     {

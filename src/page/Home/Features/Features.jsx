@@ -2,18 +2,6 @@ import { Link } from "react-router";
 
 const Features = () => {
     const features = [
-        // {
-        //     id: 'department_recommendation',
-        //     title: 'Department Recommendation',
-        //     description: 'Find the perfect department based on your interests, academic background, and career goals.',
-        //     icon: (
-        //         <svg className="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        //             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-        //         </svg>
-        //     ),
-        //     path: '/department-recommendation',
-        //     color: 'blue'
-        // },
         {
             id: 'eligibility_calculator',
             title: 'Eligibility Calculator',
@@ -37,18 +25,6 @@ const Features = () => {
             ),
             path: '/waiver-calculator',
             color: 'purple'
-        },
-        {
-            id: 'tuition_fee_calculator',
-            title: 'Tuition Fee Calculator',
-            description: 'Estimate your tuition fees and plan your education budget effectively.',
-            icon: (
-                <svg className="w-12 h-12 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            ),
-            path: '/tuition-fee-calculator',
-            color: 'orange'
         }
     ];
 
@@ -72,7 +48,7 @@ const Features = () => {
                     Discover tools designed to simplify your educational journey
                 </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
                     {features.map((feature) => (
                         <div
                             className="group cursor-pointer block"
@@ -93,7 +69,7 @@ const Features = () => {
                                     <h3 className="text-xl font-semibold leading-relaxed mb-2">
                                         {feature.title}
                                     </h3>
-                                    <p className="text-sm leading-relaxed grow">
+                                    <p className="text-sm md:text-base leading-relaxed grow">
                                         {feature.description}
                                     </p>
                                     <div className="mt-4 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
