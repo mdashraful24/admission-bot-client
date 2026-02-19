@@ -469,6 +469,9 @@ const EligibilityCalculator = () => {
 
     return (
         <div className="container mx-auto min-h-screen px-4 py-10 md:py-14 lg:py-20">
+            {/* Helmet */}
+            <title>Eligibility Calculator | DIU Admission Bot</title>
+            
             <div className="text-center mb-14">
                 <h3 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-5">
                     Find Your Perfect Department

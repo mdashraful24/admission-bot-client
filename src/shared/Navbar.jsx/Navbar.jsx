@@ -9,7 +9,7 @@ const Navbar = () => {
                         <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center text-white font-bold text-lg">
                             AB
                         </div>
-                        <span className="text-xl md:text-2xl font-bold">Admission Bot</span>
+                        <span className="text-xl md:text-2xl font-bold">DIU Admission Bot</span>
                     </Link>
                     <div>
                         <Link to="/chat" className="btn btn-primary">Get Started</Link>

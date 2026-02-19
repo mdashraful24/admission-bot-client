@@ -7,7 +7,7 @@ const RootLayout = () => {
     return (
         <div className="min-h-screen bg-linear-to-b from-slate-50 via-white to-slate-50">
             {/* Helmet */}
-            <title>Home | Admission Bot</title>
+            <title>Home | DIU Admission Bot</title>
 
             <Navbar /> 
             <Outlet />

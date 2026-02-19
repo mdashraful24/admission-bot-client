@@ -8,7 +8,7 @@ const CallToAction = () => {
                     Ready to Transform Your Admissions Process?
                 </h3>
                 <p className="text-lg md:text-xl mb-8 opacity-90 leading-relaxed">
-                    Start your today and experience the future of admissions management with Admission Bot.
+                    Start your today and experience the future of admissions management with DIU Admission Bot.
                 </p>
                 <Link to="/chat" className="btn btn-light btn-lg rounded-lg font-semibold">
                     Get Started Today

@@ -109,7 +109,7 @@ export default function Chat() {
     return (
         <div className="flex flex-col h-screen">
             {/* Helmet */}
-            <title>Chat | Admission Bot</title>
+            <title>Chat | DIU Admission Bot</title>
 
             {/* Header */}
             <div className='border-b border-slate-200 bg-white px-4 py-3 shadow-sm'>
@@ -119,7 +119,7 @@ export default function Chat() {
                             <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center text-white font-bold text-lg">
                                 AB
                             </div>
-                            <span className="text-xl md:text-2xl font-bold">Admission Bot</span>
+                            <span className="text-xl md:text-2xl font-bold">DIU Admission Bot</span>
                         </div>
                     </Link>
                     {messages.length > 0 && (

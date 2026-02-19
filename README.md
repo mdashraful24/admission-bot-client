@@ -1,4 +1,4 @@
-# Admission Bot
+# DIU Admission Bot
 
 <div align="center">
   <img height="500" src="https://drive.google.com/uc?export=view&id=1khBWoVZm2E09dkPdpec78MfT9P4TbZue" />

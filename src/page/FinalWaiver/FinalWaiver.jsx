@@ -308,6 +308,9 @@ const FinalWaiver = () => {
 
     return (
         <div className="container mx-auto min-h-screen px-4 py-10 md:py-14 lg:py-20">
+            {/* Helmet */}
+            <title>Waver Calculator | DIU Admission Bot</title>
+
             {/* Header */}
             <div className="text-center mb-10 lg:mb-0">
                 <div className="flex flex-col items-center gap-2 md:gap-4">

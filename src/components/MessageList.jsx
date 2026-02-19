@@ -22,7 +22,7 @@ export default function MessageList({ messages, isLoading }) {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v9a2 2 0 01-2 2h-5l-5 5v-5z" />
                             </svg>
                         </div>
-                        <h2 className="text-2xl font-bold mb-2">Welcome to Admission Bot</h2>
+                        <h2 className="text-2xl font-bold mb-2">Welcome to DIU Admission Bot</h2>
                         <p>Ask me anything about admissions, requirements, deadlines, and more!</p>
                     </div>
                 </div>
