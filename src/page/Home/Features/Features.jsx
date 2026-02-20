@@ -39,7 +39,7 @@ const Features = () => {
     };
 
     return (
-        <div className="px-4 pb-12 md:pb-16 lg:pb-20">
+        <div className="px-4 pb-16 md:pb-20 lg:pb-28">
             <div className="container mx-auto">
                 <h3 className="text-3xl lg:text-5xl font-semibold text-center mb-4">
                     Powerful Features
@@ -57,7 +57,7 @@ const Features = () => {
                                 key={feature.id}
                                 to={feature.path} className={`
                                 card ${getBgColor(feature.color)}
-                                rounded-xl p-6 shadow-md hover:shadow-xl
+                                rounded-xl px-6 py-4 shadow-md hover:shadow-xl
                                 transition-all duration-300 ease-in-out
                                 hover:-translate-y-1
                                 border border-gray-100 h-full

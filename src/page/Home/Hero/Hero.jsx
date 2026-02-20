@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 const Hero = () => {
     return (
-        <div className="relative overflow-hidden px-4 pt-10 pb-16 md:py-16 lg:py-20">
+        <div className="relative overflow-hidden px-4 pt-10 pb-16 md:py-20 lg:py-28">
             <div className="container mx-auto text-center animate-fadeInUp">
                 <h3 className="text-3xl md:text-4xl lg:text-6xl font-bold mb-6 tracking-tight">
                     <span className="text-gradient">Intelligent Admissions Simplified</span>
