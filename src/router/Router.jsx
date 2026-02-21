@@ -4,6 +4,7 @@ import RootLayout from "../Layout/RootLayout";
 import Home from "../page/Home/Home";
 import EligibilityCalculator from "../page/EligibilityCalculator/EligibilityCalculator";
 import FinalWaiver from "../page/FinalWaiver/FinalWaiver";
+import ErrorPage from "../shared/404/ErrorPage";
 
 export const router = createBrowserRouter([
     {
@@ -19,4 +20,8 @@ export const router = createBrowserRouter([
         path: "/chat",
         element: <Chat></Chat>
     },
+    {
+        path: "*",
+        element: <ErrorPage></ErrorPage>
+    }
 ]);
