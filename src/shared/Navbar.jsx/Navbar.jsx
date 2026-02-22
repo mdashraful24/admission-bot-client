@@ -63,7 +63,7 @@ const Navbar = () => {
                             )}
                         </div>
 
-                        <Link to="/chat" className="btn btn-primary">Chat</Link>
+                        <Link to="/chat" className="px-3 py-2 font-semibold text-[0.95rem] border border-gray-200 rounded-xl drop-shadow shadow hover:bg-linear-to-r from-blue-50 to-blue-100">Chat</Link>
 
                         {/* Menu Button */}
                         {!isHomePage && (
