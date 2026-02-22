@@ -51,17 +51,19 @@ const Features = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
                     {features.map((feature) => (
                         <div
+                            key={feature.id}
                             className="group cursor-pointer block"
                         >
                             <Link
-                                key={feature.id}
-                                to={feature.path} className={`
-                                card ${getBgColor(feature.color)}
-                                rounded-xl px-6 py-4 shadow-md hover:shadow-xl
-                                transition-all duration-300 ease-in-out
-                                hover:-translate-y-1
-                                border border-gray-100 h-full
-                            `}>
+                                to={feature.path}
+                                className={`
+                                    card ${getBgColor(feature.color)}
+                                    rounded-xl px-6 py-4 shadow-md hover:shadow-xl
+                                    transition-all duration-300 ease-in-out
+                                    hover:-translate-y-1
+                                    border border-gray-100 h-full
+                                `}
+                            >
                                 <div className="flex flex-col items-center h-full text-center">
                                     <div className="mb-4 transition-transform duration-300 ease-in-out">
                                         {feature.icon}
