@@ -28,10 +28,12 @@ const Navbar = () => {
                 <div className="flex items-center justify-between h-16">
                     {/* Logo and Brand */}
                     <Link to="/" className="flex items-center gap-3" onClick={closeMenu}>
-                        <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center text-white font-bold text-lg">
-                            AB
+                        <div className="hidden md:block">
+                            <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center text-white font-bold text-lg">
+                                AB
+                            </div>
                         </div>
-                        <span className="hidden md:block text-xl md:text-2xl font-bold truncate">
+                        <span className="text-xl md:text-2xl font-bold truncate drop-shadow md:drop-shadow-none">
                             DIU Admission Bot
                         </span>
                     </Link>
