@@ -409,8 +409,8 @@ const EligibilityCalculator = () => {
     };
 
     const getInputClassName = (error) => `
-        w-full px-4 py-2.5 border rounded-lg
-        focus:outline-none focus:ring-2
+        w-full px-4 py-2 border rounded-lg
+        focus:outline-none focus:ring-1
         ${error
             ? 'border-red-300 bg-red-50 focus:ring-red-500 focus:border-red-500'
             : 'border-gray-300 bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white'
@@ -418,8 +418,8 @@ const EligibilityCalculator = () => {
     `;
 
     const getSelectClassName = (error) => `
-        w-full px-4 py-2.5 border rounded-lg appearance-none bg-white
-        focus:outline-none focus:ring-2
+        w-full px-4 py-2 border rounded-lg appearance-none bg-white
+        focus:outline-none focus:ring-1
         ${error
             ? 'border-red-300 bg-red-50 focus:ring-red-500 focus:border-red-500'
             : 'border-gray-300 bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white'
@@ -471,7 +471,7 @@ const EligibilityCalculator = () => {
         <div className="container mx-auto min-h-screen px-4 py-10 md:py-14 lg:py-20">
             {/* Helmet */}
             <title>Eligibility Calculator | DIU Admission Bot</title>
-            
+
             <div className="text-center mb-14">
                 <h3 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-5">
                     Find Your Perfect Department
@@ -573,9 +573,10 @@ const EligibilityCalculator = () => {
                         </h3>
                     </div>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="p-6 bg-linear-to-br from-slate-50 via-white to-indigo-50">
-                        <div className="space-y-8">
-                            <div className="space-y-4">
+                    {/* Form */}
+                    <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-6 bg-linear-to-br from-slate-50 via-white to-indigo-50">
+                        <div className="space-y-6">
+                            <div className="space-y-3">
                                 <h3 className="text-lg font-medium flex items-center">
                                     <span className="bg-indigo-100 text-indigo-600 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2">1</span>
                                     Basic Academic Results
@@ -607,7 +608,7 @@ const EligibilityCalculator = () => {
                                                     <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                                     </svg>
-                                                    <span className="text-sm font-medium text-yellow-700">Golden GPA?</span>
+                                                    <span className="text-xs md:text-sm font-medium text-yellow-700">Golden GPA?</span>
                                                     <div className="flex items-center gap-3 ml-auto">
                                                         <label className="flex items-center gap-2 cursor-pointer">
                                                             <input
@@ -616,7 +617,7 @@ const EligibilityCalculator = () => {
                                                                 {...register('sscGolden')}
                                                                 className="w-4 h-4 text-yellow-600"
                                                             />
-                                                            <span className="text-sm">Yes</span>
+                                                            <span className="text-xs md:text-sm">Yes</span>
                                                         </label>
                                                         <label className="flex items-center gap-2 cursor-pointer">
                                                             <input
@@ -625,7 +626,7 @@ const EligibilityCalculator = () => {
                                                                 {...register('sscGolden')}
                                                                 className="w-4 h-4 text-yellow-600"
                                                             />
-                                                            <span className="text-sm">No</span>
+                                                            <span className="text-xs md:text-sm">No</span>
                                                         </label>
                                                     </div>
                                                 </div>
@@ -693,7 +694,7 @@ const EligibilityCalculator = () => {
                                 </div>
                             </div>
 
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <h3 className={`text-lg font-medium flex items-center ${isStep2Complete() ? 'text-green-600' : 'text-gray-900'
                                     }`}>
                                     <span className={`rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2 ${isStep2Complete()
@@ -847,7 +848,7 @@ const EligibilityCalculator = () => {
                                 </div>
                             </div>
 
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <h3 className="text-lg font-medium flex items-center">
                                     <span className="bg-indigo-100 text-indigo-600 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2">3</span>
                                     Career Interests

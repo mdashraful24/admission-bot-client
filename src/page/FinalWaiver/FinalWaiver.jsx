@@ -232,7 +232,7 @@ const FinalWaiver = () => {
                     className={`relative cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                     onClick={() => !disabled && setIsOpen(!isOpen)}
                 >
-                    <div className={`w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg flex items-center justify-between transition-all focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent`}>
+                    <div className={`w-full px-4 py-2 bg-white border border-gray-200 rounded-lg flex items-center justify-between transition-all focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent`}>
                         <div className="flex items-center gap-3">
                             {Icon && <Icon className={`w-5 h-5 ${selectedOption ? 'text-blue-600' : 'text-gray-400'}`} />}
                             <span className={selectedOption ? '' : 'text-gray-400'}>
@@ -412,7 +412,7 @@ const FinalWaiver = () => {
                                                 setFormData(prev => ({ ...prev, eduStatus: status.id }));
                                                 setOpenSelect(null);
                                             }}
-                                            className={`px-4 py-2.5 rounded-lg border transition-all flex items-center justify-center gap-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${formData.eduStatus === status.id
+                                            className={`px-4 py-2 rounded-lg border transition-all flex items-center justify-center gap-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${formData.eduStatus === status.id
                                                 ? 'border-blue-600 bg-blue-50 text-blue-700'
                                                 : 'border-gray-200 hover:border-blue-300 text-gray-600'
                                                 }`}
@@ -446,7 +446,7 @@ const FinalWaiver = () => {
                                                     max="5"
                                                     value={formData.sscResult}
                                                     onChange={(e) => setFormData(prev => ({ ...prev, sscResult: e.target.value }))}
-                                                    className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                                    className="w-full px-4 py-2 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                                                     placeholder="Enter GPA out of 5.00"
                                                 />
                                             </div>
@@ -463,7 +463,7 @@ const FinalWaiver = () => {
                                                     max="5"
                                                     value={formData.hscResult}
                                                     onChange={(e) => setFormData(prev => ({ ...prev, hscResult: e.target.value }))}
-                                                    className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                                    className="w-full px-4 py-2 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                                                     placeholder="Enter GPA out of 5.00"
                                                 />
                                             </div>
@@ -512,7 +512,7 @@ const FinalWaiver = () => {
                                                     max="5"
                                                     value={formData.hscResult}
                                                     onChange={(e) => setFormData(prev => ({ ...prev, hscResult: e.target.value }))}
-                                                    className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                                    className="w-full px-4 py-2 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                                                     placeholder="Enter GPA out of 5.00"
                                                 />
                                             </div>
@@ -562,7 +562,7 @@ const FinalWaiver = () => {
                                             max="4"
                                             value={formData.dipGpa}
                                             onChange={(e) => setFormData(prev => ({ ...prev, dipGpa: e.target.value }))}
-                                            className="w-full px-4 py-2.5 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                            className="w-full px-4 py-2 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                                             placeholder="Enter Diploma GPA out of 4.00"
                                         />
                                     </div>
@@ -590,7 +590,7 @@ const FinalWaiver = () => {
                                                         educationBoard: type.id
                                                     }));
                                                 }}
-                                                className={`px-3 py-3 rounded-lg border transition-all flex items-center justify-center gap-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.educationBoard === type.id
+                                                className={`px-3 py-2.5 rounded-lg border transition-all flex items-center justify-center gap-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.educationBoard === type.id
                                                     ? 'border-blue-600 bg-blue-50 text-blue-700'
                                                     : 'border-gray-200 hover:border-blue-300 text-gray-500'
                                                     }`}
@@ -627,7 +627,7 @@ const FinalWaiver = () => {
                                                     setFormData(prev => ({ ...prev, gender: g.id }));
                                                     setOpenSelect(null);
                                                 }}
-                                                className={`px-4 py-2.5 rounded-lg border transition-all flex items-center justify-center gap-2 capitalize focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.gender === g.id
+                                                className={`px-4 py-2 rounded-lg border transition-all flex items-center justify-center gap-2 capitalize focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.gender === g.id
                                                     ? 'border-blue-600 bg-blue-50 text-blue-700'
                                                     : 'border-gray-200 hover:border-blue-300 text-gray-600'
                                                     }`}
@@ -660,7 +660,7 @@ const FinalWaiver = () => {
                                                     setFormData(prev => ({ ...prev, playerStatus: status }));
                                                     setOpenSelect(null);
                                                 }}
-                                                className={`px-4 py-2.5 rounded-lg border transition-all capitalize flex items-center justify-center gap-2 focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.playerStatus === status
+                                                className={`px-4 py-2 rounded-lg border transition-all capitalize flex items-center justify-center gap-2 focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.playerStatus === status
                                                     ? 'border-blue-600 bg-blue-50 text-blue-700'
                                                     : 'border-gray-200 hover:border-blue-300 text-gray-600'
                                                     }`}
