@@ -9,16 +9,16 @@ export default function MessageBubble({ message }) {
                 </div>
             )}
             <div
-                className={`max-w-xs lg:max-w-2xl px-4 py-3 rounded-lg ${isUser
-                    ? 'bg-blue-500 text-white rounded-br-none'
-                    : 'bg-slate-200 rounded-tl-none'
+                className={`max-w-xs lg:max-w-2xl px-4 py-2 ${isUser
+                    ? 'bg-blue-500 text-white rounded-2xl rounded-br-none'
+                    : 'bg-slate-200 rounded-lg rounded-tl-none'
                     }`}
             >
                 <p className="wrap-break-word whitespace-pre-wrap text-sm leading-relaxed">
                     {message.text}
                 </p>
                 {message.timestamp && (
-                    <span className={`text-xs text-end mt-2 block ${isUser ? 'text-blue-100' : 'text-slate-500'}`}>
+                    <span className={`text-xs text-end mt-1.5 block ${isUser ? 'text-blue-100' : 'text-slate-500'}`}>
                         {formatTime(message.timestamp)}
                     </span>
                 )}
