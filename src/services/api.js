@@ -1,5 +1,5 @@
 // API Service for Admission Bot
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://osru23-admission-bot.hf.space';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 // Generate or retrieve user ID for conversation tracking
 const getUserId = () => {

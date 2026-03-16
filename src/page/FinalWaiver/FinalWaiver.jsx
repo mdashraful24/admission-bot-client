@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { GraduationCap, Award, Users, Target, Shield, Heart, BookOpen, Medal, ChevronDown, ChevronUp, Clock, DollarSign, CheckCircle, Flag, Trophy, ArrowRight, Star } from 'lucide-react';
+import { GraduationCap, Award, Users, Heart, BookOpen, Medal, ChevronDown, ChevronUp, Clock, CheckCircle, Flag, Trophy, ArrowRight, Star } from 'lucide-react';
+import programsData from "../../data/programsDetails.json"
 
 const FinalWaiver = () => {
     const [formData, setFormData] = useState({
@@ -21,52 +22,21 @@ const FinalWaiver = () => {
     const [showProgramDetails, setShowProgramDetails] = useState(false);
     const [result, setResult] = useState(null);
     const [openSelect, setOpenSelect] = useState(null);
+    const [programs, setPrograms] = useState([]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        // Load programs from JSON - access the programsDetails array
+        if (programsData && programsData.programsDetails) {
+            setPrograms(programsData.programsDetails);
+        }
     }, []);
 
-    // Program data
-    const programs = [
-        {
-            id: 'cse',
-            name: 'Computer Science & Engineering',
-            duration: '4 Years',
-            credits: 160,
-            fees: 450000,
-            icon: <Target className="w-5 h-5" />
-        },
-        {
-            id: 'bba',
-            name: 'Bachelor of Business Administration',
-            duration: '4 Years',
-            credits: 140,
-            fees: 400000,
-            icon: <Users className="w-5 h-5" />
-        },
-        {
-            id: 'english',
-            name: 'English Literature',
-            duration: '4 Years',
-            credits: 130,
-            fees: 350000,
-            icon: <BookOpen className="w-5 h-5" />
-        },
-        {
-            id: 'law',
-            name: 'LLB (Hons)',
-            duration: '4 Years',
-            credits: 145,
-            fees: 380000,
-            icon: <Shield className="w-5 h-5" />
-        }
-    ];
-
-    // Education Board Types (now used as the main selection)
+    // Education Board Types
     const educationBoardTypes = [
-        { id: 'general', name: 'General Education Board', icon: <BookOpen className="w-4 h-4" /> },
-        { id: 'technical', name: 'Technical Board', icon: <Award className="w-4 h-4" /> },
-        { id: 'madrasha', name: 'Madrasha Board', icon: <GraduationCap className="w-4 h-4" /> }
+        { id: 'general', name: 'General Education', icon: <BookOpen className="w-4 h-4" /> },
+        { id: 'technical', name: 'Technical', icon: <Award className="w-4 h-4" /> },
+        { id: 'madrasha', name: 'Madrasha', icon: <GraduationCap className="w-4 h-4" /> }
     ];
 
     const playerCategories = [
@@ -284,11 +254,6 @@ const FinalWaiver = () => {
                                         >
                                             {optionRenderer ? optionRenderer(option, isSelected) : (
                                                 <>
-                                                    {/* {option.icon && (
-                                                        <span className={isSelected ? 'text-white' : 'text-gray-500'}>
-                                                            {option.icon}
-                                                        </span>
-                                                    )} */}
                                                     <span className={isSelected ? 'font-medium' : ''}>{optionLabel}</span>
                                                     {isSelected && (
                                                         <CheckCircle className="w-5 h-5 text-white ml-auto" />
@@ -307,10 +272,7 @@ const FinalWaiver = () => {
     };
 
     return (
-        <div className="container mx-auto min-h-screen px-4 py-10 md:py-14 lg:py-20">
-            {/* Helmet */}
-            <title>Waver Calculator | DIU Admission Bot</title>
-
+        <div className="container max-w-7xl mx-auto min-h-screen px-4 py-10 md:py-14 lg:py-20">
             {/* Header */}
             <div className="text-center mb-10 lg:mb-0">
                 <div className="flex flex-col items-center gap-2 md:gap-4">
@@ -377,21 +339,21 @@ const FinalWaiver = () => {
                                                 <Clock className="w-5 h-5 text-blue-600" />
                                             </div>
                                             <div className="text-xs">Duration</div>
-                                            <div className="font-bold">{selectedProgram.duration}</div>
+                                            <div className="font-bold">{selectedProgram.duration || 'N/A'}</div>
                                         </div>
                                         <div className="text-center">
                                             <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
                                                 <BookOpen className="w-5 h-5 text-indigo-600" />
                                             </div>
                                             <div className="text-xs">Credits</div>
-                                            <div className="font-bold">{selectedProgram.credits}</div>
+                                            <div className="font-bold">{selectedProgram.credits || 'N/A'}</div>
                                         </div>
                                         <div className="text-center">
                                             <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
-                                                <DollarSign className="w-5 h-5 text-green-600" />
+                                                <p className="w-5 h-5 text-green-600 font-bold" >৳</p>
                                             </div>
                                             <div className="text-xs">Total Fees</div>
-                                            <div className="font-bold">৳{selectedProgram.fees.toLocaleString()}</div>
+                                            <div className="font-bold">{selectedProgram.fees ? `৳${selectedProgram.fees}` : 'N/A'}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -576,7 +538,7 @@ const FinalWaiver = () => {
                                     Additional Information
                                 </h3>
 
-                                {/* Board Type - Now the main education board selection */}
+                                {/* Board Type */}
                                 <div className="space-y-2">
                                     <label className="block text-sm font-medium">Education Board/University</label>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 no-animation-grid">
@@ -687,7 +649,7 @@ const FinalWaiver = () => {
                                                         setFormData(prev => ({ ...prev, playerCategory: cat.id }));
                                                         setOpenSelect(null);
                                                     }}
-                                                    className={`flex items-center justify-between p-1.5 rounded-lg border transition-all focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.playerCategory == cat.id
+                                                    className={`flex items-center justify-between text-xs p-1.5 rounded-lg border transition-all focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.playerCategory == cat.id
                                                         ? 'border-blue-600 bg-blue-50'
                                                         : 'border-gray-200 hover:border-blue-300'
                                                         }`}
@@ -805,22 +767,24 @@ const FinalWaiver = () => {
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-gray-500">Duration:</span>
-                                            <span className="font-medium text-gray-800">{selectedProgram.duration}</span>
+                                            <span className="font-medium text-gray-800">{selectedProgram.duration || 'N/A'}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-gray-500">Total Credits:</span>
-                                            <span className="font-medium text-gray-800">{selectedProgram.credits}</span>
+                                            <span className="font-medium text-gray-800">{selectedProgram.credits || 'N/A'}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-gray-500">Total Fees:</span>
-                                            <span className="font-medium text-gray-800">৳{selectedProgram.fees.toLocaleString()}</span>
+                                            <span className="font-medium text-gray-800">{selectedProgram.fees ? `৳${selectedProgram.fees}` : 'N/A'}</span>
                                         </div>
-                                        <div className="flex justify-between pt-2 border-t border-gray-200">
-                                            <span className="text-gray-500">After Waiver:</span>
-                                            <span className="font-bold text-green-600">
-                                                ৳{(selectedProgram.fees * (1 - result.final / 100)).toLocaleString()}
-                                            </span>
-                                        </div>
+                                        {selectedProgram.fees && (
+                                            <div className="flex justify-between pt-2 border-t border-gray-200">
+                                                <span className="text-gray-500">After Waiver:</span>
+                                                <span className="font-bold text-green-600">
+                                                    ৳{(parseFloat(selectedProgram.fees) * (1 - result.final / 100)).toLocaleString()}
+                                                </span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             )}
@@ -852,7 +816,7 @@ const FinalWaiver = () => {
                             </button>
                         </div>
                     ) : (
-                            <div className="bg-linear-to-tr from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg p-6 border border-gray-200 h-full flex items-center justify-center lg:mt-12">
+                        <div className="bg-linear-to-tr from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg p-6 border border-gray-200 h-full flex items-center justify-center lg:mt-12">
                             <div className="text-center py-12">
                                 <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <GraduationCap className="w-10 h-10 text-blue-600" />
@@ -866,27 +830,6 @@ const FinalWaiver = () => {
                     )}
                 </div>
             </div>
-
-            {/* <style jsx>{`
-            @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-            }
-            
-            @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-            }
-            
-            .animate-fadeIn {
-            animation: fadeIn 0.3s ease-out;
-            }
-            
-            .animate-slideDown {
-            animation: slideDown 0.3s ease-out;
-            }
-        `}</style> */}
-
         </div>
     );
 };
