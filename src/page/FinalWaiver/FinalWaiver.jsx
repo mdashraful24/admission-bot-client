@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { GraduationCap, Award, Users, Heart, BookOpen, Medal, ChevronDown, ChevronUp, Clock, CheckCircle, Flag, Trophy, ArrowRight, Star } from 'lucide-react';
-import programsData from "../../data/programsDetails.json"
+import { GraduationCap, Award, Users, Heart, BookOpen, Medal, Clock, CheckCircle, Flag, Trophy, ArrowRight, Star, Globe, Building, User } from 'lucide-react';
+import programsData from "../../data/programs.json"
+import CustomSelect from '../../shared/CustomSelect/CustomSelect';
 
 const FinalWaiver = () => {
     const [formData, setFormData] = useState({
@@ -11,7 +12,7 @@ const FinalWaiver = () => {
         hscResult: '',
         hscGolden: 'no',
         gender: '',
-        playerStatus: 'no',
+        playerStatus: '',
         playerCategory: '',
         eduStatus: 'general',
         faculty: '',
@@ -21,22 +22,20 @@ const FinalWaiver = () => {
     const [selectedProgram, setSelectedProgram] = useState(null);
     const [showProgramDetails, setShowProgramDetails] = useState(false);
     const [result, setResult] = useState(null);
-    const [openSelect, setOpenSelect] = useState(null);
     const [programs, setPrograms] = useState([]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        // Load programs from JSON - access the programsDetails array
-        if (programsData && programsData.programsDetails) {
-            setPrograms(programsData.programsDetails);
+        if (programsData && programsData.programs) {
+            setPrograms(programsData.programs);
         }
     }, []);
 
     // Education Board Types
     const educationBoardTypes = [
-        { id: 'general', name: 'General Education', icon: <BookOpen className="w-4 h-4" /> },
-        { id: 'technical', name: 'Technical', icon: <Award className="w-4 h-4" /> },
-        { id: 'madrasha', name: 'Madrasha', icon: <GraduationCap className="w-4 h-4" /> }
+        { id: 'general', name: 'General Education Board', icon: <BookOpen className="w-4 h-4" /> },
+        { id: 'technical', name: 'Technical Board', icon: <Award className="w-4 h-4" /> },
+        { id: 'madrasha', name: 'Madrasha Board', icon: <GraduationCap className="w-4 h-4" /> }
     ];
 
     const playerCategories = [
@@ -49,6 +48,7 @@ const FinalWaiver = () => {
 
     const faculties = [
         { id: 'fse', name: 'Faculty of Science & Engineering' },
+        { id: 'fe', name: 'Faculty of Engineering' },
         { id: 'fhs', name: 'Faculty of Health Sciences' },
         { id: 'fbe', name: 'Faculty of Business & Economics' },
         { id: 'fhss', name: 'Faculty of Humanities & Social Sciences' },
@@ -62,6 +62,78 @@ const FinalWaiver = () => {
         { id: 'other', name: 'Other', icon: <Users className="w-4 h-4" /> }
     ];
 
+    // Player status options
+    const playerStatusOptions = [
+        { id: 'yes', name: 'Yes', icon: <Trophy className="w-4 h-4" /> },
+        { id: 'no', name: 'No', icon: <Users className="w-4 h-4" /> }
+    ];
+
+    // Education status options
+    const educationStatusOptions = [
+        { id: 'general', name: 'General', icon: <BookOpen className="w-4 h-4" /> },
+        { id: 'diploma', name: 'Diploma', icon: <Award className="w-4 h-4" /> }
+    ];
+
+    // Function to validate GPA input
+    const validateGPA = (value, maxGPA) => {
+        if (value === '') return true;
+        const num = parseFloat(value);
+        return !isNaN(num) && num >= 0 && num <= maxGPA;
+    };
+
+    // Handle GPA input change with validation
+    const handleGPAChange = (field, value, maxGPA) => {
+        // Allow empty string, numbers, and decimal point
+        if (value === '' || /^\d*\.?\d*$/.test(value)) {
+            if (value === '' || validateGPA(value, maxGPA)) {
+                setFormData(prev => ({ ...prev, [field]: value }));
+            }
+        }
+    };
+
+    // Function to check if form is valid
+    const isFormValid = () => {
+        // Check basic required fields
+        if (!formData.program || !formData.gender || !formData.educationBoard || !formData.faculty) {
+            return false;
+        }
+
+        // Check academic results based on education status
+        if (formData.eduStatus === 'general') {
+            // Check SSC and HSC results
+            if (!formData.sscResult || !formData.hscResult) {
+                return false;
+            }
+
+            // Check if results are valid numbers
+            const ssc = parseFloat(formData.sscResult);
+            const hsc = parseFloat(formData.hscResult);
+
+            if (isNaN(ssc) || ssc < 0 || ssc > 5 || isNaN(hsc) || hsc < 0 || hsc > 5) {
+                return false;
+            }
+
+            // Check Golden GPA options when GPA is 5.0
+            if (ssc === 5.0 && !formData.sscGolden) {
+                return false;
+            }
+            if (hsc === 5.0 && !formData.hscGolden) {
+                return false;
+            }
+        } else {
+            // Check Diploma GPA
+            if (!formData.dipGpa) {
+                return false;
+            }
+            const dipGpa = parseFloat(formData.dipGpa);
+            if (isNaN(dipGpa) || dipGpa < 0 || dipGpa > 4) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
     // Check if GPA is 5.00 to show Golden option
     const showGoldenOption = (gpa) => {
         return parseFloat(gpa) === 5.0;
@@ -73,7 +145,6 @@ const FinalWaiver = () => {
         setSelectedProgram(program);
         setFormData(prev => ({ ...prev, program: programId }));
         setShowProgramDetails(true);
-        setOpenSelect(null);
     };
 
     // Calculate waiver
@@ -144,131 +215,14 @@ const FinalWaiver = () => {
                 current: c_waiver
             }
         });
-    };
 
-    // Custom Select Component with selected item at top
-    const CustomSelect = ({
-        label,
-        value,
-        options,
-        onChange,
-        icon: Icon,
-        placeholder,
-        disabled = false,
-        optionRenderer
-    }) => {
-        const [isOpen, setIsOpen] = useState(false);
-
-        // Find the selected option
-        const selectedOption = options?.find(opt => {
-            if (typeof opt === 'string') {
-                return opt === value;
-            }
-            return opt.id === value || opt === value;
-        });
-
-        // Reorder options to put selected item at the top
-        const getOrderedOptions = () => {
-            if (!options || !value) return options;
-
-            // Create a copy of options array
-            const optionsCopy = [...options];
-
-            // Find the index of selected option
-            const selectedIndex = optionsCopy.findIndex(opt => {
-                if (typeof opt === 'string') {
-                    return opt === value;
-                }
-                return opt.id === value || opt === value;
+        // Scroll to results
+        setTimeout(() => {
+            document.getElementById('results-section')?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
             });
-
-            // If selected option found, remove it and put at the beginning
-            if (selectedIndex !== -1) {
-                const [selectedItem] = optionsCopy.splice(selectedIndex, 1);
-                return [selectedItem, ...optionsCopy];
-            }
-
-            return optionsCopy;
-        };
-
-        const orderedOptions = getOrderedOptions();
-
-        return (
-            <div className="relative">
-                <label className="block text-sm font-medium mb-2">
-                    {label}
-                </label>
-                <div
-                    className={`relative cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    onClick={() => !disabled && setIsOpen(!isOpen)}
-                >
-                    <div className={`w-full px-4 py-2 bg-white border border-gray-200 rounded-lg flex items-center justify-between transition-all focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent`}>
-                        <div className="flex items-center gap-3">
-                            {Icon && <Icon className={`w-5 h-5 ${selectedOption ? 'text-blue-600' : 'text-gray-400'}`} />}
-                            <span className={selectedOption ? '' : 'text-gray-400'}>
-                                {selectedOption
-                                    ? (typeof selectedOption === 'string'
-                                        ? selectedOption
-                                        : selectedOption.name || selectedOption.label || selectedOption)
-                                    : placeholder || `Select ${label}`}
-                            </span>
-                        </div>
-                        {isOpen ?
-                            <ChevronUp className={`w-5 h-5 ${selectedOption ? 'text-blue-600' : 'text-gray-400'}`} /> :
-                            <ChevronDown className={`w-5 h-5 ${selectedOption ? 'text-blue-600' : 'text-gray-400'}`} />
-                        }
-                    </div>
-
-                    {isOpen && (
-                        <>
-                            <div
-                                className="fixed inset-0 z-10"
-                                onClick={() => setIsOpen(false)}
-                            />
-                            <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-auto">
-                                {orderedOptions?.map((option, index) => {
-                                    const optionValue = typeof option === 'string' ? option : option.id;
-                                    const optionLabel = typeof option === 'string' ? option : option.name;
-                                    const isSelected = value === optionValue;
-
-                                    return (
-                                        <div
-                                            key={index}
-                                            className={`px-4 py-2.5 text-sm cursor-pointer flex items-center gap-3 transition-colors focus:outline-none ${isSelected
-                                                ? 'bg-blue-500 text-white'
-                                                : 'hover:bg-blue-50 text-gray-700'
-                                                }`}
-                                            onClick={() => {
-                                                onChange(optionValue);
-                                                setIsOpen(false);
-                                            }}
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter' || e.key === ' ') {
-                                                    onChange(optionValue);
-                                                    setIsOpen(false);
-                                                }
-                                            }}
-                                            tabIndex={0}
-                                            role="option"
-                                            aria-selected={isSelected}
-                                        >
-                                            {optionRenderer ? optionRenderer(option, isSelected) : (
-                                                <>
-                                                    <span className={isSelected ? 'font-medium' : ''}>{optionLabel}</span>
-                                                    {isSelected && (
-                                                        <CheckCircle className="w-5 h-5 text-white ml-auto" />
-                                                    )}
-                                                </>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </>
-                    )}
-                </div>
-            </div>
-        );
+        }, 100);
     };
 
     return (
@@ -315,10 +269,11 @@ const FinalWaiver = () => {
                                 onChange={handleProgramSelect}
                                 icon={GraduationCap}
                                 placeholder="Choose your program"
+                                required
                                 optionRenderer={(program, isSelected) => (
                                     <div className="flex items-center gap-3 w-full">
                                         <div className="flex-1">
-                                            <div className={`font-medium ${isSelected ? 'text-white' : ''}`}>
+                                            <div className={`${isSelected ? 'text-white font-medium' : ''}`}>
                                                 {program.name}
                                             </div>
                                         </div>
@@ -359,32 +314,29 @@ const FinalWaiver = () => {
                                 </div>
                             )}
 
-                            {/* Education Status */}
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium">Education Status</label>
-                                <div className="grid grid-cols-2 gap-3 no-animation-grid">
-                                    {[
-                                        { id: 'general', name: 'General', icon: <BookOpen className="w-4 h-4" /> },
-                                        { id: 'diploma', name: 'Diploma', icon: <Award className="w-4 h-4" /> }
-                                    ].map((status) => (
-                                        <button
-                                            key={status.id}
-                                            type="button"
-                                            onClick={() => {
-                                                setFormData(prev => ({ ...prev, eduStatus: status.id }));
-                                                setOpenSelect(null);
-                                            }}
-                                            className={`px-4 py-2 rounded-lg border transition-all flex items-center justify-center gap-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${formData.eduStatus === status.id
-                                                ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                                : 'border-gray-200 hover:border-blue-300 text-gray-600'
-                                                }`}
-                                        >
-                                            {status.icon}
-                                            {status.name}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+                            {/* Education Status - Using CustomSelect */}
+                            <CustomSelect
+                                label="Education Status"
+                                value={formData.eduStatus}
+                                options={educationStatusOptions}
+                                onChange={(value) => {
+                                    setFormData(prev => ({ ...prev, eduStatus: value }));
+                                }}
+                                icon={BookOpen}
+                                placeholder="Select education status"
+                                required
+                                optionRenderer={(option, isSelected) => (
+                                    <div className="flex items-center gap-3">
+                                        <div className={`p-1 rounded ${isSelected ? 'text-white' : 'text-gray-600'}`}>
+                                            {option.icon}
+                                        </div>
+                                        <span className={isSelected ? 'font-medium' : ''}>{option.name}</span>
+                                        {isSelected && (
+                                            <CheckCircle className="w-5 h-5 text-white ml-auto" />
+                                        )}
+                                    </div>
+                                )}
+                            />
 
                             {/* Academic Results Section */}
                             <div className="space-y-4">
@@ -399,16 +351,13 @@ const FinalWaiver = () => {
                                             {/* SSC Result */}
                                             <div className='w-full'>
                                                 <label className="block text-sm font-medium mb-2">
-                                                    SSC Result/Equivalent
+                                                    SSC Result/Equivalent <span className="text-red-500">*</span>
                                                 </label>
                                                 <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
-                                                    max="5"
+                                                    type="text"
                                                     value={formData.sscResult}
-                                                    onChange={(e) => setFormData(prev => ({ ...prev, sscResult: e.target.value }))}
-                                                    className="w-full px-4 py-2 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                                    onChange={(e) => handleGPAChange('sscResult', e.target.value, 5)}
+                                                    className="w-full px-4 py-2 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-500"
                                                     placeholder="Enter GPA out of 5.00"
                                                 />
                                             </div>
@@ -416,17 +365,15 @@ const FinalWaiver = () => {
                                             {/* HSC Result */}
                                             <div className='hidden md:block w-full'>
                                                 <label className="block text-sm font-medium mb-2">
-                                                    HSC Result/Equivalent
+                                                    HSC Result/Equivalent <span className="text-red-500">*</span>
                                                 </label>
                                                 <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
-                                                    max="5"
+                                                    type="text"
                                                     value={formData.hscResult}
-                                                    onChange={(e) => setFormData(prev => ({ ...prev, hscResult: e.target.value }))}
-                                                    className="w-full px-4 py-2 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                                    onChange={(e) => handleGPAChange('hscResult', e.target.value, 5)}
+                                                    className="w-full px-4 py-2 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-500"
                                                     placeholder="Enter GPA out of 5.00"
+                                                    required
                                                 />
                                             </div>
 
@@ -462,22 +409,21 @@ const FinalWaiver = () => {
                                                 </div>
                                             )}
 
-                                            {/* HSC Result */}
+                                            {/* HSC Result - Mobile */}
                                             <div className='block md:hidden w-full'>
                                                 <label className="block text-sm font-medium mb-2">
-                                                    HSC Result/Equivalent
+                                                    HSC Result/Equivalent <span className="text-red-500">*</span>
                                                 </label>
                                                 <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
-                                                    max="5"
+                                                    type="text"
                                                     value={formData.hscResult}
-                                                    onChange={(e) => setFormData(prev => ({ ...prev, hscResult: e.target.value }))}
+                                                    onChange={(e) => handleGPAChange('hscResult', e.target.value, 5)}
                                                     className="w-full px-4 py-2 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                                                     placeholder="Enter GPA out of 5.00"
+                                                    required
                                                 />
                                             </div>
+
                                             {/* Golden GPA Option - Only shows if GPA is 5.00 */}
                                             {showGoldenOption(formData.hscResult) && (
                                                 <div className="w-full flex items-center gap-2 bg-gray-50 border border-gray-100 px-2 py-3 rounded-lg">
@@ -515,15 +461,12 @@ const FinalWaiver = () => {
                                     // Diploma GPA Input
                                     <div>
                                         <label className="block text-sm font-medium mb-2">
-                                            Diploma GPA
+                                            Diploma GPA <span className="text-red-500">*</span>
                                         </label>
                                         <input
-                                            type="number"
-                                            step="0.01"
-                                            min="0"
-                                            max="4"
+                                            type="text"
                                             value={formData.dipGpa}
-                                            onChange={(e) => setFormData(prev => ({ ...prev, dipGpa: e.target.value }))}
+                                            onChange={(e) => handleGPAChange('dipGpa', e.target.value, 4)}
                                             className="w-full px-4 py-2 border border-gray-200 hover:border-blue-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                                             placeholder="Enter Diploma GPA out of 4.00"
                                         />
@@ -538,67 +481,67 @@ const FinalWaiver = () => {
                                     Additional Information
                                 </h3>
 
-                                {/* Board Type */}
-                                <div className="space-y-2">
-                                    <label className="block text-sm font-medium">Education Board/University</label>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 no-animation-grid">
-                                        {educationBoardTypes.map((type) => (
-                                            <button
-                                                key={type.id}
-                                                type="button"
-                                                onClick={() => {
-                                                    setFormData(prev => ({
-                                                        ...prev,
-                                                        educationBoard: type.id
-                                                    }));
-                                                }}
-                                                className={`px-3 py-2.5 rounded-lg border transition-all flex items-center justify-center gap-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.educationBoard === type.id
-                                                    ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                                    : 'border-gray-200 hover:border-blue-300 text-gray-500'
-                                                    }`}
-                                            >
-                                                {type.icon}
-                                                <span className="text-sm text-center">{type.name}</span>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+                                <div className='grid grid-cols-1 md:grid-cols-2 gap-5 no-animation-grid'>
+                                    {/* Education Board/University - Using CustomSelect */}
+                                    <CustomSelect
+                                        label="Education Board/University"
+                                        value={formData.educationBoard}
+                                        options={educationBoardTypes}
+                                        onChange={(value) => {
+                                            setFormData(prev => ({ ...prev, educationBoard: value }));
+                                        }}
+                                        icon={Globe}
+                                        placeholder="Select education board"
+                                        required
+                                        optionRenderer={(option, isSelected) => (
+                                            <div className="flex items-center gap-3">
+                                                <div className={`p-1 rounded ${isSelected ? 'text-white' : 'text-gray-600'}`}>
+                                                    {option.icon}
+                                                </div>
+                                                <span className={isSelected ? 'font-medium' : ''}>{option.name}</span>
+                                                {isSelected && (
+                                                    <CheckCircle className="w-5 h-5 text-white ml-auto" />
+                                                )}
+                                            </div>
+                                        )}
+                                    />
 
-                                {/* Faculty Selection */}
-                                <CustomSelect
-                                    label="Faculty"
-                                    value={formData.faculty}
-                                    options={faculties}
-                                    onChange={(value) => {
-                                        setFormData(prev => ({ ...prev, faculty: value }));
-                                        setOpenSelect(null);
-                                    }}
-                                    icon={GraduationCap}
-                                    placeholder="Select faculty"
-                                />
+                                    {/* Faculty Selection - Using CustomSelect */}
+                                    <CustomSelect
+                                        label="Faculty"
+                                        value={formData.faculty}
+                                        options={faculties}
+                                        onChange={(value) => {
+                                            setFormData(prev => ({ ...prev, faculty: value }));
+                                        }}
+                                        icon={Building}
+                                        placeholder="Select faculty"
+                                        required
+                                    />
 
-                                {/* Gender Selection */}
-                                <div className="space-y-2">
-                                    <label className="block text-sm font-medium">Gender</label>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 no-animation-grid">
-                                        {genderOptions.map((g) => (
-                                            <button
-                                                key={g.id}
-                                                type="button"
-                                                onClick={() => {
-                                                    setFormData(prev => ({ ...prev, gender: g.id }));
-                                                    setOpenSelect(null);
-                                                }}
-                                                className={`px-4 py-2 rounded-lg border transition-all flex items-center justify-center gap-2 capitalize focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.gender === g.id
-                                                    ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                                    : 'border-gray-200 hover:border-blue-300 text-gray-600'
-                                                    }`}
-                                            >
-                                                {g.icon}
-                                                {g.name}
-                                            </button>
-                                        ))}
-                                    </div>
+                                    {/* Gender Selection - Using CustomSelect */}
+                                    <CustomSelect
+                                        label="Gender"
+                                        value={formData.gender}
+                                        options={genderOptions}
+                                        onChange={(value) => {
+                                            setFormData(prev => ({ ...prev, gender: value }));
+                                        }}
+                                        icon={User}
+                                        placeholder="Select gender"
+                                        required
+                                        optionRenderer={(option, isSelected) => (
+                                            <div className="flex items-center gap-3">
+                                                <div className={`p-1 rounded ${isSelected ? 'text-white' : 'text-gray-600'}`}>
+                                                    {option.icon}
+                                                </div>
+                                                <span className={isSelected ? 'font-medium' : ''}>{option.name}</span>
+                                                {isSelected && (
+                                                    <CheckCircle className="w-5 h-5 text-white ml-auto" />
+                                                )}
+                                            </div>
+                                        )}
+                                    />
                                 </div>
                             </div>
 
@@ -609,30 +552,28 @@ const FinalWaiver = () => {
                                     Others
                                 </h3>
 
-                                <div className="space-y-2">
-                                    <label className="block text-sm font-medium">
-                                        Are you a player?
-                                    </label>
-                                    <div className="grid grid-cols-2 gap-3 no-animation-grid">
-                                        {['yes', 'no'].map((status) => (
-                                            <button
-                                                key={status}
-                                                type="button"
-                                                onClick={() => {
-                                                    setFormData(prev => ({ ...prev, playerStatus: status }));
-                                                    setOpenSelect(null);
-                                                }}
-                                                className={`px-4 py-2 rounded-lg border transition-all capitalize flex items-center justify-center gap-2 focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.playerStatus === status
-                                                    ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                                    : 'border-gray-200 hover:border-blue-300 text-gray-600'
-                                                    }`}
-                                            >
-                                                {status === 'yes' ? <Trophy className="w-4 h-4" /> : <Users className="w-4 h-4" />}
-                                                {status}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+                                {/* Are you a player? - Using CustomSelect */}
+                                <CustomSelect
+                                    label="Are you a player? (Optional)"
+                                    value={formData.playerStatus}
+                                    options={playerStatusOptions}
+                                    onChange={(value) => {
+                                        setFormData(prev => ({ ...prev, playerStatus: value, playerCategory: '' }));
+                                    }}
+                                    icon={Trophy}
+                                    placeholder="Select option"
+                                    optionRenderer={(option, isSelected) => (
+                                        <div className="flex items-center gap-3">
+                                            <div className={`p-1 rounded ${isSelected ? 'text-white' : 'text-gray-600'}`}>
+                                                {option.icon}
+                                            </div>
+                                            <span className={isSelected ? 'font-medium' : ''}>{option.name}</span>
+                                            {isSelected && (
+                                                <CheckCircle className="w-5 h-5 text-white ml-auto" />
+                                            )}
+                                        </div>
+                                    )}
+                                />
 
                                 {/* Player Category - Shows only if player status is yes */}
                                 {formData.playerStatus === 'yes' && (
@@ -647,7 +588,6 @@ const FinalWaiver = () => {
                                                     type="button"
                                                     onClick={() => {
                                                         setFormData(prev => ({ ...prev, playerCategory: cat.id }));
-                                                        setOpenSelect(null);
                                                     }}
                                                     className={`flex items-center justify-between text-xs p-1.5 rounded-lg border transition-all focus:outline-none focus:ring-1 focus:ring-blue-500 ${formData.playerCategory == cat.id
                                                         ? 'border-blue-600 bg-blue-50'
@@ -679,18 +619,25 @@ const FinalWaiver = () => {
                             {/* Calculate Button */}
                             <button
                                 onClick={calculateWaiver}
-                                disabled={!formData.program || !formData.gender || (!formData.sscResult && !formData.dipGpa)}
-                                className="w-full bg-blue-800 text-white p-2.5 rounded-lg font-semibold text-lg hover:bg-indigo-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                disabled={!isFormValid()}
+                                className="w-full bg-blue-800 text-white p-2.5 rounded-lg font-semibold text-lg hover:bg-blue-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer mt-12"
                             >
                                 Calculate Waiver
                                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                             </button>
                         </div>
+
+                        {/* Show message when form is incomplete */}
+                        {!isFormValid() && (
+                            <p className="text-sm text-amber-600 text-center mt-2">
+                                Please fill in all required fields to check eligibility
+                            </p>
+                        )}
                     </div>
                 </div>
 
                 {/* Right Side - Result */}
-                <div className="lg:sticky lg:top-8 h-fit">
+                <div id="results-section" className="lg:sticky lg:top-8 h-fit">
                     {result ? (
                         <div className="bg-linear-to-tr from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg p-6 border border-gray-200 animate-fadeIn lg:mt-12">
                             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
@@ -707,7 +654,7 @@ const FinalWaiver = () => {
                                     <div className="text-6xl font-bold text-green-600 mb-2">
                                         {result.final}%
                                     </div>
-                                    <p>You are eligible for this waiver</p>
+                                    <p className="text-gray-600">You are eligible for this waiver</p>
                                 </div>
                             </div>
 
@@ -801,16 +748,16 @@ const FinalWaiver = () => {
                                         hscResult: '',
                                         hscGolden: 'no',
                                         gender: '',
-                                        playerStatus: 'no',
+                                        playerStatus: '',
                                         playerCategory: '',
                                         eduStatus: 'general',
-                                        faculty: 'fse',
+                                        faculty: '',
                                         dipGpa: ''
                                     });
                                     setSelectedProgram(null);
                                     setShowProgramDetails(false);
                                 }}
-                                className="w-full mt-6 bg-blue-200 py-2.5 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition-all"
+                                className="w-full mt-6 bg-blue-200 py-2.5 rounded-lg hover:bg-blue-600 hover:text-white transition-all"
                             >
                                 New Calculation
                             </button>
@@ -822,7 +769,7 @@ const FinalWaiver = () => {
                                     <GraduationCap className="w-10 h-10 text-blue-600" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-2">Ready to Calculate?</h3>
-                                <p className="max-w-sm">
+                                <p className="max-w-sm text-gray-600">
                                     Fill in your information on the left to see your eligible waivers
                                 </p>
                             </div>

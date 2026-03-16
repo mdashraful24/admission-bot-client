@@ -8,7 +8,10 @@
                 "arts",
                 "science"
             ],
-            "minGPA": 2.5
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 2,
@@ -18,7 +21,10 @@
                 "arts",
                 "science"
             ],
-            "minGPA": 2.5
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 3,
@@ -28,7 +34,10 @@
                 "arts",
                 "science"
             ],
-            "minGPA": 2.5
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 4,
@@ -38,7 +47,10 @@
                 "arts",
                 "science"
             ],
-            "minGPA": 2.5
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 5,
@@ -48,7 +60,10 @@
                 "arts",
                 "science"
             ],
-            "minGPA": 2.5
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 6,
@@ -58,7 +73,10 @@
                 "arts",
                 "science"
             ],
-            "minGPA": 2.5
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 7,
@@ -68,7 +86,10 @@
                 "arts",
                 "science"
             ],
-            "minGPA": 2.5
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 8,
@@ -78,7 +99,10 @@
                 "arts",
                 "science"
             ],
-            "minGPA": 2.5
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 9,
@@ -88,7 +112,10 @@
                 "arts",
                 "science"
             ],
-            "minGPA": 2.5
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 10,
@@ -98,7 +125,10 @@
                 "arts",
                 "science"
             ],
-            "minGPA": 2.5
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 11,
@@ -108,7 +138,10 @@
                 "arts",
                 "science"
             ],
-            "minGPA": 2.5
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 12,
@@ -118,7 +151,10 @@
                 "arts",
                 "science"
             ],
-            "minGPA": 2.5
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 13,
@@ -128,7 +164,10 @@
                 "arts",
                 "science"
             ],
-            "minGPA": 2.5
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 14,
@@ -141,7 +180,10 @@
                 "math",
                 "physics",
                 "chemistry"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 15,
@@ -152,7 +194,10 @@
             "minGPA": 2.5,
             "requires": [
                 "math"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 16,
@@ -163,7 +208,10 @@
             "minGPA": 2.5,
             "requires": [
                 "math"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 17,
@@ -175,7 +223,10 @@
             "requires": [
                 "math",
                 "physics"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 18,
@@ -187,7 +238,10 @@
             "requires": [
                 "math",
                 "physics"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 19,
@@ -199,7 +253,10 @@
             "requires": [
                 "math",
                 "chemistry"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 20,
@@ -210,7 +267,10 @@
             "minGPA": 2.5,
             "requires": [
                 "math"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 21,
@@ -222,7 +282,10 @@
             "requires": [
                 "math",
                 "physics"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 22,
@@ -233,7 +296,10 @@
             "minGPA": 2.5,
             "requires": [
                 "math"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 23,
@@ -244,7 +310,10 @@
             "minGPA": 2.5,
             "requires": [
                 "math"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 24,
@@ -256,7 +325,10 @@
             "requires": [
                 "biology",
                 "chemistry"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 25,
@@ -268,7 +340,10 @@
             "requires": [
                 "biology",
                 "chemistry"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 26,
@@ -280,7 +355,10 @@
             "requires": [
                 "math",
                 "physics"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 27,
@@ -291,7 +369,10 @@
             "minGPA": 2.5,
             "requires": [
                 "math"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         },
         {
             "id": 28,
@@ -302,7 +383,10 @@
             "minGPA": 2.5,
             "requires": [
                 "biology"
-            ]
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
         }
     ]
 }
