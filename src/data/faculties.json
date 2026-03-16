@@ -1,0 +1,478 @@
+{
+    "faculties": [
+        {
+            "id": 101,
+            "faculty": "Faculty of Business & Entrepreneurship",
+            "departments": [
+                {
+                    "id": 1001,
+                    "department": "Department of Business Administration",
+                    "programs": [
+                        {
+                            "id": 10011,
+                            "name": "Bachelor of Business Administration (BBA)",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        },
+                        {
+                            "id": 10012,
+                            "name": "Master of Business Administration (MBA)",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "100000",
+                            "minGPA": 2.5
+                        },
+                        {
+                            "id": 10013,
+                            "name": "Master of Business Administration (Executive)",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        },
+                        {
+                            "id": 10014,
+                            "name": "MBA in Leadership (Executive)",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 1002,
+                    "department": "Department of Management",
+                    "programs": [
+                        {
+                            "id": 10021,
+                            "name": "BBA in Management",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 1003,
+                    "department": "Department of Real Estate",
+                    "programs": [
+                        {
+                            "id": 10031,
+                            "name": "BBA in Real Estate",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 1004,
+                    "department": "Department of Tourism & Hospitality Management",
+                    "programs": [
+                        {
+                            "id": 10041,
+                            "name": "BBA in Tourism & Hospitality Management",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 1005,
+                    "department": "Department of Innovation & Entrepreneurship",
+                    "programs": [
+                        {
+                            "id": 10051,
+                            "name": "BBA in Innovation & Entrepreneurship",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 1006,
+                    "department": "Department of Accounting",
+                    "programs": [
+                        {
+                            "id": 10061,
+                            "name": "BBA in Accounting",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 1007,
+                    "department": "Department of Finance & Banking",
+                    "programs": [
+                        {
+                            "id": 10071,
+                            "name": "BBA in Finance & Banking",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 1008,
+                    "department": "Department of Marketing",
+                    "programs": [
+                        {
+                            "id": 10081,
+                            "name": "BBA in Marketing",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 102,
+            "faculty": "Faculty of Science & Information Technology",
+            "departments": [
+                {
+                    "id": 2001,
+                    "department": "Department of Computer Science and Engineering",
+                    "programs": [
+                        {
+                            "id": 20011,
+                            "name": "B.Sc in Computer Science and Engineering",
+                            "duration": "4 Years",
+                            "credits": "140",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 2002,
+                    "department": "Department of Software Engineering",
+                    "programs": [
+                        {
+                            "id": 20021,
+                            "name": "B.Sc in Software Engineering",
+                            "duration": "4 Years",
+                            "credits": "140",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 2003,
+                    "department": "Department of Multimedia & Creative Technology",
+                    "programs": [
+                        {
+                            "id": 20031,
+                            "name": "B.Sc in Multimedia & Creative Technology",
+                            "duration": "4 Years",
+                            "credits": "120",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 2004,
+                    "department": "Department of Computing and Information System",
+                    "programs": [
+                        {
+                            "id": 20041,
+                            "name": "B.Sc in Computing and Information System",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 2005,
+                    "department": "Department of Information Technology & Management",
+                    "programs": [
+                        {
+                            "id": 20051,
+                            "name": "B.Sc in Information Technology & Management",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 2006,
+                    "department": "Department of Robotics and Mechatronics Engineering",
+                    "programs": [
+                        {
+                            "id": 20061,
+                            "name": "B.Sc in Robotics and Mechatronics Engineering",
+                            "duration": "4 Years",
+                            "credits": "140",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 103,
+            "faculty": "Faculty of Engineering",
+            "departments": [
+                {
+                    "id": 3001,
+                    "department": "Department of Electrical and Electronic Engineering",
+                    "programs": [
+                        {
+                            "id": 30011,
+                            "name": "B.Sc in Electrical and Electronics Engineering",
+                            "duration": "4 Years",
+                            "credits": "140",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 3002,
+                    "department": "Department of Civil Engineering",
+                    "programs": [
+                        {
+                            "id": 30021,
+                            "name": "B.Sc in Civil Engineering",
+                            "duration": "4 Years",
+                            "credits": "140",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 3003,
+                    "department": "Department of Textile Engineering",
+                    "programs": [
+                        {
+                            "id": 30031,
+                            "name": "B.Sc in Textile Engineering",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 3004,
+                    "department": "Department of Information and Communication Engineering",
+                    "programs": [
+                        {
+                            "id": 30041,
+                            "name": "B.Sc in Information and Communication Engineering",
+                            "duration": "4 Years",
+                            "credits": "140",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 3005,
+                    "department": "Department of Architecture",
+                    "programs": [
+                        {
+                            "id": 30051,
+                            "name": "Bachelor of Architecture (B.Arch)",
+                            "duration": "5 Years",
+                            "credits": "160",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 104,
+            "faculty": "Faculty of Health and Life Sciences",
+            "departments": [
+                {
+                    "id": 4001,
+                    "department": "Department of Environmental Science and Disaster Management",
+                    "programs": [
+                        {
+                            "id": 40011,
+                            "name": "B.Sc in Environmental Science and Disaster Management",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 4002,
+                    "department": "Department of Pharmacy",
+                    "programs": [
+                        {
+                            "id": 40021,
+                            "name": "B.Pharm (Bachelor of Pharmacy)",
+                            "duration": "4 Years",
+                            "credits": "140",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 4003,
+                    "department": "Department of Nutrition and Food Engineering",
+                    "programs": [
+                        {
+                            "id": 40031,
+                            "name": "B.Sc in Nutrition and Food Engineering",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 4004,
+                    "department": "Department of Public Health",
+                    "programs": [
+                        {
+                            "id": 40041,
+                            "name": "B.Sc in Public Health",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 4005,
+                    "department": "Department of Physical Education & Sports Science",
+                    "programs": [
+                        {
+                            "id": 40051,
+                            "name": "B.Sc in Physical Education & Sports Science",
+                            "duration": "4 Years",
+                            "credits": "120",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 4006,
+                    "department": "Department of Agricultural Science",
+                    "programs": [
+                        {
+                            "id": 40061,
+                            "name": "B.Sc in Agricultural Science",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 4007,
+                    "department": "Department of Genetic Engineering and Biotechnology",
+                    "programs": [
+                        {
+                            "id": 40071,
+                            "name": "B.Sc in Genetic Engineering and Biotechnology",
+                            "duration": "4 Years",
+                            "credits": "140",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 105,
+            "faculty": "Faculty of Humanities & Social Sciences",
+            "departments": [
+                {
+                    "id": 5001,
+                    "department": "Department of English",
+                    "programs": [
+                        {
+                            "id": 50011,
+                            "name": "BA (Hons) in English",
+                            "duration": "4 Years",
+                            "credits": "120",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 5002,
+                    "department": "Department of Law",
+                    "programs": [
+                        {
+                            "id": 50021,
+                            "name": "LL.B (Hons)",
+                            "duration": "4 Years",
+                            "credits": "130",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 5003,
+                    "department": "Department of Journalism, Media and Communication",
+                    "programs": [
+                        {
+                            "id": 50031,
+                            "name": "BSS (Hons) in Journalism, Media & Communication",
+                            "duration": "4 Years",
+                            "credits": "120",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 5004,
+                    "department": "Department of Development Studies",
+                    "programs": [
+                        {
+                            "id": 50041,
+                            "name": "BSS (Hons) in Development Studies",
+                            "duration": "4 Years",
+                            "credits": "120",
+                            "fees": "",
+                            "minGPA": 2.5
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
