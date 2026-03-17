@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GraduationCap, Award, Users, Heart, BookOpen, Medal, Clock, CheckCircle, Flag, Trophy, ArrowRight, Star, Globe, User, Loader2 } from 'lucide-react';
+import { GraduationCap, Award, Users, Heart, BookOpen, Medal, Clock, CheckCircle, Flag, Trophy, ArrowRight, Star, Globe, User, Loader2, Venus } from 'lucide-react';
 import facultiesData from "../../data/faculties.json"
 import CustomSelect from '../../shared/CustomSelect/CustomSelect';
 
@@ -367,7 +367,11 @@ const FinalWaiver = () => {
                                                 <p className="w-5 h-5 text-green-600 font-bold" >৳</p>
                                             </div>
                                             <div className="text-xs">Total Fees</div>
-                                            <div className="font-bold">{selectedProgram.fees ? `৳${selectedProgram.fees}` : 'N/A'}</div>
+                                            <div className="font-bold">
+                                                {selectedProgram.fees
+                                                    ? `৳${parseFloat(selectedProgram.fees.replace(/,/g, '')).toLocaleString()}`
+                                                    : 'N/A'}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -655,7 +659,7 @@ const FinalWaiver = () => {
                             <button
                                 onClick={calculateWaiver}
                                 disabled={!isFormValid() || isCalculating}
-                                className="w-full bg-blue-800 text-white p-2.5 rounded-lg font-semibold text-lg hover:bg-blue-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer mt-12"
+                                className="w-full bg-blue-800 text-white p-2.5 rounded-lg font-semibold text-lg hover:bg-blue-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer mt-8"
                             >
                                 {isCalculating ? (
                                     <>
@@ -691,8 +695,8 @@ const FinalWaiver = () => {
                             </div>
                         </div>
                     ) : result ? (
-                        <div className="bg-linear-to-tr from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg p-6 border border-gray-200 animate-fadeIn lg:mt-12">
-                            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                            <div className="bg-linear-to-tr from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg p-4 md:p-6 border border-gray-200 animate-fadeIn lg:mt-12">
+                            <h2 className="md:text-xl font-bold mb-4 md:mb-6 flex items-center gap-2">
                                 <div className="w-1 h-6 bg-linear-to-b from-green-600 to-emerald-600 rounded-full"></div>
                                 Your Waiver Results
                             </h2>
@@ -717,8 +721,8 @@ const FinalWaiver = () => {
                                 {result.breakdown.female > 0 && (
                                     <div className="flex items-center justify-between p-3 bg-pink-50 rounded-xl border border-pink-100">
                                         <div className="flex items-center gap-3">
-                                            <Heart className="w-5 h-5 text-pink-600" />
-                                            <span>Female Quota (10%)</span>
+                                            <Venus className="w-5 h-5 text-pink-600" />
+                                            <span>Female Quota</span>
                                         </div>
                                         <span className="font-bold text-pink-600">{result.breakdown.female}%</span>
                                     </div>
@@ -768,48 +772,56 @@ const FinalWaiver = () => {
                             {/* Program Info Summary */}
                             {selectedProgram && (
                                 <div className="mt-6 p-4 bg-gray-50 rounded-xl">
-                                    <h3 className="font-medium text-gray-700 mb-3">Program Summary</h3>
+                                    <h3 className="font-medium mb-3">Program Summary</h3>
                                     <div className="space-y-2 text-sm">
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-500">Program:</span>
-                                            <span className="font-medium text-gray-800">{selectedProgram.name}</span>
+                                        <div className="flex justify-between gap-x-2">
+                                            <span className="text-gray-600">Program:</span>
+                                            <span className="font-medium">{selectedProgram.name}</span>
                                         </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-500">Department:</span>
-                                            <span className="font-medium text-gray-800">{selectedProgram.department}</span>
+                                        <div className="flex justify-between gap-x-2">
+                                            <span className="text-gray-600">Department:</span>
+                                            <span className="font-medium">{selectedProgram.department}</span>
                                         </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-500">Faculty:</span>
-                                            <span className="font-medium text-gray-800">{selectedProgram.faculty}</span>
+                                        <div className="flex justify-between gap-x-2">
+                                            <span className="text-gray-600">Faculty:</span>
+                                            <span className="font-medium">{selectedProgram.faculty}</span>
                                         </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-500">Duration:</span>
-                                            <span className="font-medium text-gray-800">{selectedProgram.duration || 'N/A'}</span>
+                                        <div className="flex justify-between gap-x-2">
+                                            <span className="text-gray-600">Duration:</span>
+                                            <span className="font-medium">{selectedProgram.duration || 'N/A'}</span>
                                         </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-500">Total Credits:</span>
-                                            <span className="font-medium text-gray-800">{selectedProgram.credits || 'N/A'}</span>
+                                        <div className="flex justify-between gap-x-2">
+                                            <span className="text-gray-600">Total Credits:</span>
+                                            <span className="font-medium">{selectedProgram.credits || 'N/A'}</span>
                                         </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-500">Minimum GPA Required:</span>
-                                            <span className="font-medium text-gray-800">{selectedProgram.minGPA || '2.5'}</span>
+                                        <div className="flex justify-between gap-x-2">
+                                            <span className="text-gray-600">Minimum GPA Required:</span>
+                                            <span className="font-medium">{selectedProgram.minGPA || '2.5'}</span>
                                         </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-500">Total Fees:</span>
-                                            <span className="font-medium text-gray-800">{selectedProgram.fees ? `৳${parseFloat(selectedProgram.fees).toLocaleString()}` : 'N/A'}</span>
+                                        <div className="flex justify-between gap-x-2">
+                                            <span className="text-gray-600">Total Fees:</span>
+                                            <span className="font-medium">
+                                                {selectedProgram.fees
+                                                    ? `৳${parseFloat(selectedProgram.fees.replace(/,/g, '')).toLocaleString()}`
+                                                    : 'N/A'}
+                                            </span>
                                         </div>
                                         {selectedProgram.fees && (
                                             <>
-                                                <div className="flex justify-between pt-2 border-t border-gray-200">
-                                                    <span className="text-gray-500">Waiver Amount:</span>
+                                                <div className="flex justify-between gap-x-2 pt-2 border-t border-gray-400">
+                                                    <span className="text-gray-600">Waiver Amount:</span>
                                                     <span className="font-medium text-green-600">
-                                                        ৳{(parseFloat(selectedProgram.fees) * (result.final / 100)).toLocaleString()}
+                                                        ৳{(parseFloat(selectedProgram.fees.replace(/,/g, '')) * (result.final / 100)
+                                                        ).toLocaleString()}
                                                     </span>
                                                 </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-500 font-semibold">After Waiver:</span>
+                                                <div className="flex justify-between gap-x-2 mt-3">
+                                                    <span className="font-semibold">After Waiver:</span>
                                                     <span className="font-bold text-green-600 text-base">
-                                                        ৳{(parseFloat(selectedProgram.fees) * (1 - result.final / 100)).toLocaleString()}
+                                                        ৳{(
+                                                            parseFloat(String(selectedProgram.fees).replace(/,/g, '')) *
+                                                            (1 - result.final / 100)
+                                                        ).toLocaleString()}
                                                     </span>
                                                 </div>
                                             </>
@@ -850,8 +862,8 @@ const FinalWaiver = () => {
                                     <GraduationCap className="w-10 h-10 text-blue-600" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-2">Ready to Calculate?</h3>
-                                <p className="max-w-sm text-gray-600">
-                                    Fill in your information on the left to see your eligible waivers
+                                <p className="lg:max-w-sm text-gray-600">
+                                    Fill in your information on the left to see your eligible waivers.
                                 </p>
                             </div>
                         </div>

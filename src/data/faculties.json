@@ -13,31 +13,7 @@
                             "name": "Bachelor of Business Administration (BBA)",
                             "duration": "4 Years",
                             "credits": "130",
-                            "fees": "",
-                            "minGPA": 2.5
-                        },
-                        {
-                            "id": 10012,
-                            "name": "Master of Business Administration (MBA)",
-                            "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "100000",
-                            "minGPA": 2.5
-                        },
-                        {
-                            "id": 10013,
-                            "name": "Master of Business Administration (Executive)",
-                            "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "",
-                            "minGPA": 2.5
-                        },
-                        {
-                            "id": 10014,
-                            "name": "MBA in Leadership (Executive)",
-                            "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "",
+                            "fees": "789575",
                             "minGPA": 2.5
                         }
                     ]
@@ -50,8 +26,8 @@
                             "id": 10021,
                             "name": "BBA in Management",
                             "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "",
+                            "credits": "133",
+                            "fees": "761,000",
                             "minGPA": 2.5
                         }
                     ]
@@ -62,10 +38,10 @@
                     "programs": [
                         {
                             "id": 10031,
-                            "name": "BBA in Real Estate",
+                            "name": "Bachelor of Real Estate",
                             "duration": "4 Years",
                             "credits": "130",
-                            "fees": "",
+                            "fees": "706,400",
                             "minGPA": 2.5
                         }
                     ]
@@ -76,10 +52,10 @@
                     "programs": [
                         {
                             "id": 10041,
-                            "name": "BBA in Tourism & Hospitality Management",
+                            "name": "Bachelor of Tourism & Hospitality Management (BTHM)",
                             "duration": "4 Years",
                             "credits": "130",
-                            "fees": "",
+                            "fees": "698,600",
                             "minGPA": 2.5
                         }
                     ]
@@ -93,7 +69,7 @@
                             "name": "BBA in Innovation & Entrepreneurship",
                             "duration": "4 Years",
                             "credits": "130",
-                            "fees": "",
+                            "fees": "733,950",
                             "minGPA": 2.5
                         }
                     ]
@@ -107,7 +83,7 @@
                             "name": "BBA in Accounting",
                             "duration": "4 Years",
                             "credits": "130",
-                            "fees": "",
+                            "fees": "761,000",
                             "minGPA": 2.5
                         }
                     ]
@@ -120,8 +96,8 @@
                             "id": 10071,
                             "name": "BBA in Finance & Banking",
                             "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "",
+                            "credits": "133",
+                            "fees": "761,000",
                             "minGPA": 2.5
                         }
                     ]
@@ -134,8 +110,8 @@
                             "id": 10081,
                             "name": "BBA in Marketing",
                             "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "",
+                            "credits": "133",
+                            "fees": "761,000",
                             "minGPA": 2.5
                         }
                     ]
@@ -154,8 +130,8 @@
                             "id": 20011,
                             "name": "B.Sc in Computer Science and Engineering",
                             "duration": "4 Years",
-                            "credits": "140",
-                            "fees": "",
+                            "credits": "154.5",
+                            "fees": "1,020,450",
                             "minGPA": 2.5
                         }
                     ]
@@ -168,8 +144,8 @@
                             "id": 20021,
                             "name": "B.Sc in Software Engineering",
                             "duration": "4 Years",
-                            "credits": "140",
-                            "fees": "",
+                            "credits": "147",
+                            "fees": "952,500",
                             "minGPA": 2.5
                         }
                     ]
@@ -182,8 +158,8 @@
                             "id": 20031,
                             "name": "B.Sc in Multimedia & Creative Technology",
                             "duration": "4 Years",
-                            "credits": "120",
-                            "fees": "",
+                            "credits": "147",
+                            "fees": "744,150",
                             "minGPA": 2.5
                         }
                     ]
@@ -196,8 +172,8 @@
                             "id": 20041,
                             "name": "B.Sc in Computing and Information System",
                             "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "",
+                            "credits": "142",
+                            "fees": "755,600",
                             "minGPA": 2.5
                         }
                     ]
@@ -210,22 +186,8 @@
                             "id": 20051,
                             "name": "B.Sc in Information Technology & Management",
                             "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "",
-                            "minGPA": 2.5
-                        }
-                    ]
-                },
-                {
-                    "id": 2006,
-                    "department": "Department of Robotics and Mechatronics Engineering",
-                    "programs": [
-                        {
-                            "id": 20061,
-                            "name": "B.Sc in Robotics and Mechatronics Engineering",
-                            "duration": "4 Years",
-                            "credits": "140",
-                            "fees": "",
+                            "credits": "142",
+                            "fees": "757,200",
                             "minGPA": 2.5
                         }
                     ]
@@ -242,10 +204,10 @@
                     "programs": [
                         {
                             "id": 30011,
-                            "name": "B.Sc in Electrical and Electronics Engineering",
+                            "name": "B. Sc. in Electrical and Electronic Engineering (EEE)",
                             "duration": "4 Years",
-                            "credits": "140",
-                            "fees": "",
+                            "credits": "144",
+                            "fees": "843,200",
                             "minGPA": 2.5
                         }
                     ]
@@ -256,10 +218,10 @@
                     "programs": [
                         {
                             "id": 30021,
-                            "name": "B.Sc in Civil Engineering",
+                            "name": "B. Sc. in Civil Engineering (CE)",
                             "duration": "4 Years",
-                            "credits": "140",
-                            "fees": "",
+                            "credits": "147",
+                            "fees": "833,850",
                             "minGPA": 2.5
                         }
                     ]
@@ -270,10 +232,10 @@
                     "programs": [
                         {
                             "id": 30031,
-                            "name": "B.Sc in Textile Engineering",
+                            "name": "B. Sc. in Textile Engineering (TE)",
                             "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "",
+                            "credits": "154",
+                            "fees": "786,200",
                             "minGPA": 2.5
                         }
                     ]
@@ -284,10 +246,10 @@
                     "programs": [
                         {
                             "id": 30041,
-                            "name": "B.Sc in Information and Communication Engineering",
+                            "name": "B. Sc. in Information & Communication Engineering (ICE)",
                             "duration": "4 Years",
-                            "credits": "140",
-                            "fees": "",
+                            "credits": "145",
+                            "fees": "703,000",
                             "minGPA": 2.5
                         }
                     ]
@@ -298,10 +260,24 @@
                     "programs": [
                         {
                             "id": 30051,
-                            "name": "Bachelor of Architecture (B.Arch)",
+                            "name": "B. Arch. in Architecture",
                             "duration": "5 Years",
-                            "credits": "160",
-                            "fees": "",
+                            "credits": "194",
+                            "fees": "924,600",
+                            "minGPA": 2.5
+                        }
+                    ]
+                },
+                {
+                    "id": 3006,
+                    "department": "B. Sc. in Robotics and Mechatronics Engineering (RME)",
+                    "programs": [
+                        {
+                            "id": 30061,
+                            "name": "B.Sc in Robotics and Mechatronics Engineering",
+                            "duration": "4 Years",
+                            "credits": "154",
+                            "fees": "937,950",
                             "minGPA": 2.5
                         }
                     ]
@@ -320,8 +296,8 @@
                             "id": 40011,
                             "name": "B.Sc in Environmental Science and Disaster Management",
                             "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "",
+                            "credits": "146",
+                            "fees": "612,200",
                             "minGPA": 2.5
                         }
                     ]
@@ -334,8 +310,8 @@
                             "id": 40021,
                             "name": "B.Pharm (Bachelor of Pharmacy)",
                             "duration": "4 Years",
-                            "credits": "140",
-                            "fees": "",
+                            "credits": "160",
+                            "fees": "1,082,500",
                             "minGPA": 2.5
                         }
                     ]
@@ -348,8 +324,8 @@
                             "id": 40031,
                             "name": "B.Sc in Nutrition and Food Engineering",
                             "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "",
+                            "credits": "151",
+                            "fees": "699,000",
                             "minGPA": 2.5
                         }
                     ]
@@ -362,8 +338,8 @@
                             "id": 40041,
                             "name": "B.Sc in Public Health",
                             "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "",
+                            "credits": "142",
+                            "fees": "658,800",
                             "minGPA": 2.5
                         }
                     ]
@@ -376,8 +352,8 @@
                             "id": 40051,
                             "name": "B.Sc in Physical Education & Sports Science",
                             "duration": "4 Years",
-                            "credits": "120",
-                            "fees": "",
+                            "credits": "144",
+                            "fees": "609,400",
                             "minGPA": 2.5
                         }
                     ]
@@ -390,8 +366,8 @@
                             "id": 40061,
                             "name": "B.Sc in Agricultural Science",
                             "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "",
+                            "credits": "150",
+                            "fees": "694,350",
                             "minGPA": 2.5
                         }
                     ]
@@ -404,8 +380,8 @@
                             "id": 40071,
                             "name": "B.Sc in Genetic Engineering and Biotechnology",
                             "duration": "4 Years",
-                            "credits": "140",
-                            "fees": "",
+                            "credits": "145",
+                            "fees": "930,000",
                             "minGPA": 2.5
                         }
                     ]
@@ -424,8 +400,8 @@
                             "id": 50011,
                             "name": "BA (Hons) in English",
                             "duration": "4 Years",
-                            "credits": "120",
-                            "fees": "",
+                            "credits": "130",
+                            "fees": "694,500",
                             "minGPA": 2.5
                         }
                     ]
@@ -438,8 +414,8 @@
                             "id": 50021,
                             "name": "LL.B (Hons)",
                             "duration": "4 Years",
-                            "credits": "130",
-                            "fees": "",
+                            "credits": "144",
+                            "fees": "954,600",
                             "minGPA": 2.5
                         }
                     ]
@@ -452,8 +428,8 @@
                             "id": 50031,
                             "name": "BSS (Hons) in Journalism, Media & Communication",
                             "duration": "4 Years",
-                            "credits": "120",
-                            "fees": "",
+                            "credits": "142",
+                            "fees": "654,000",
                             "minGPA": 2.5
                         }
                     ]

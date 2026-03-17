@@ -1,0 +1,392 @@
+{
+    "programs": [
+        {
+            "id": 1,
+            "name": "BBA in Management",
+            "category": [
+                "commerce",
+                "arts",
+                "science"
+            ],
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 2,
+            "name": "BBA in Accounting",
+            "category": [
+                "commerce",
+                "arts",
+                "science"
+            ],
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 3,
+            "name": "BBA in Finance & Banking",
+            "category": [
+                "commerce",
+                "arts",
+                "science"
+            ],
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 4,
+            "name": "BBA in Marketing",
+            "category": [
+                "commerce",
+                "arts",
+                "science"
+            ],
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 5,
+            "name": "BBA (General)",
+            "category": [
+                "commerce",
+                "arts",
+                "science"
+            ],
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 6,
+            "name": "Bachelor of Entrepreneurship (BE)",
+            "category": [
+                "commerce",
+                "arts",
+                "science"
+            ],
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 7,
+            "name": "Bachelor of Real Estate (BRE)",
+            "category": [
+                "commerce",
+                "arts",
+                "science"
+            ],
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 8,
+            "name": "Bachelor of Tourism & Hospitality Management (BTHM)",
+            "category": [
+                "commerce",
+                "arts",
+                "science"
+            ],
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 9,
+            "name": "B.Sc. in Multimedia & Creative Technology (MCT)",
+            "category": [
+                "commerce",
+                "arts",
+                "science"
+            ],
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 10,
+            "name": "B.Sc. (Hons) Physical Education & Sports Science (PESS)",
+            "category": [
+                "commerce",
+                "arts",
+                "science"
+            ],
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 11,
+            "name": "BA (Hons) in English",
+            "category": [
+                "commerce",
+                "arts",
+                "science"
+            ],
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 12,
+            "name": "LL.B (Hons)",
+            "category": [
+                "commerce",
+                "arts",
+                "science"
+            ],
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 13,
+            "name": "BSS (Hons) in Journalism, Media, & Communication (JMC)",
+            "category": [
+                "commerce",
+                "arts",
+                "science"
+            ],
+            "minGPA": 2.5,
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 14,
+            "name": "B.Sc in GEB",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "math",
+                "physics",
+                "chemistry"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 15,
+            "name": "B.Sc in Computer Science and Engineering",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "math"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 16,
+            "name": "B.Sc in Software Engineering",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "math"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 17,
+            "name": "B.Sc in Electrical and Electronics Engineering",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "math",
+                "physics"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 18,
+            "name": "B.Sc in Civil Engineering",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "math",
+                "physics"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 19,
+            "name": "B.Sc in Textile Engineering",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "math",
+                "chemistry"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 20,
+            "name": "B.Sc in Information and Communication Engineering",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "math"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 21,
+            "name": "Bachelor of Architecture (B.Arch)",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "math",
+                "physics"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 22,
+            "name": "B.Sc in Computing and Information Systems",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "math"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 23,
+            "name": "B.Sc in Information and Technology Management",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "math"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 24,
+            "name": "Bachelor of Public Health",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "biology",
+                "chemistry"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 25,
+            "name": "Bachelor of Nutrition and Food Engineering",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "biology",
+                "chemistry"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 26,
+            "name": "B.Sc in ESDM",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "math",
+                "physics"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 27,
+            "name": "Bachelor in AGS",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "math"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        },
+        {
+            "id": 28,
+            "name": "Bachelor of NFE",
+            "category": [
+                "science"
+            ],
+            "minGPA": 2.5,
+            "requires": [
+                "biology"
+            ],
+            "duration": "",
+            "credits": "",
+            "fees": ""
+        }
+    ]
+}
