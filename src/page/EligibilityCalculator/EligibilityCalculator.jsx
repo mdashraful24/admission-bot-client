@@ -527,28 +527,32 @@ const EligibilityCalculator = () => {
 
     return (
         <FormProvider {...methods}>
-            <div className="container mx-auto min-h-screen px-4 py-10 md:py-14 lg:py-20">
+            <div className="container mx-auto min-h-screen px-4 py-10 md:py-14">
                 {/* Helmet */}
                 <title>Eligibility Calculator | DIU Admission Bot</title>
 
-                <div className="flex flex-col items-center gap-2 md:gap-4 mb-10">
-                    <div className='flex justify-center md:items-center lg:items-start gap-x-5'>
-                        <div className="hidden md:block p-2 bg-linear-to-r from-blue-600 to-indigo-600 rounded-xl">
-                            <Compass className="w-6 h-6 text-white" />
+                <div className="text-center mb-10">
+                    <div className="flex flex-col items-center gap-2 md:gap-4">
+                        <div className='flex justify-center md:items-center lg:items-start gap-x-5'>
+                            <div className="hidden md:block p-2 bg-linear-to-r from-blue-600 to-indigo-600 rounded-xl">
+                                <Compass className="w-6 h-6 text-white" />
+                            </div>
+                            <h3 className="text-2xl md:text-3xl lg:text-4xl font-semibold">
+                                Find Your Perfect Department
+                            </h3>
                         </div>
-                        <h3 className="text-2xl md:text-4xl font-semibold">
-                            Find Your Perfect Department
-                        </h3>
+                        <div>
+                            <p className="lg:text-lg max-w-xl lg:max-w-3xl mx-auto leading-relaxed">
+                                Discover which university programs match your academic results
+                            </p>
+                        </div>
                     </div>
-                    <p className="md:text-lg max-w-3xl mx-auto">
-                        Discover which university programs match your academic results
-                    </p>
                 </div>
 
                 {/* Main container with grid layout for side-by-side */}
                 <div className="max-w-7xl mx-auto">
                     {showGuidelines && (
-                        <div className="max-w-4xl mx-auto bg-linear-to-r from-indigo-600 to-purple-700 text-white rounded-2xl shadow-xl p-6 mb-14 relative">
+                        <div className="max-w-4xl mx-auto bg-linear-to-r from-indigo-600 to-purple-700 text-white rounded-2xl shadow-lg p-4 md:p-6 mb-10 md:mb-12 relative">
                             <button
                                 onClick={() => setShowGuidelines(false)}
                                 className="absolute top-4 right-4 hover:text-red-600 hover:bg-red-50 p-1 rounded-full"
@@ -646,10 +650,10 @@ const EligibilityCalculator = () => {
                                         {/* Step 1: Basic Academic Results */}
                                         <div className="space-y-3">
                                             <h3 className="text-lg font-medium flex items-center">
-                                                <span className="bg-indigo-100 text-indigo-600 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2">1</span>
+                                                {/* <span className="bg-indigo-100 text-indigo-600 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2">1</span> */}
                                                 Basic Academic Results
                                             </h3>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pl-8 no-animation-grid">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 no-animation-grid">
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-medium">
                                                         SSC Result (GPA) <span className="text-red-500">*</span>
@@ -763,12 +767,10 @@ const EligibilityCalculator = () => {
                                         {/* Step 2: Group & Subject Results */}
                                         <div className="space-y-3">
                                             <h3 className={`text-lg font-medium flex items-center`}>
-                                                <span className={`rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2 bg-indigo-100 text-indigo-600`}>
-                                                    2
-                                                </span>
+                                                {/* <span className={`rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-2 bg-indigo-100 text-indigo-600`}>2</span> */}
                                                 Group & Subject Results
                                             </h3>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pl-8 no-animation-grid">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 no-animation-grid">
                                                 {/* Group Selection using CustomSelect with predefined options */}
                                                 <Controller
                                                     name="group"
@@ -914,7 +916,7 @@ const EligibilityCalculator = () => {
                                         </div>
                                     </div>
 
-                                    <div className="mt-12">
+                                    <div className="mt-10">
                                         <button
                                             type="submit"
                                             disabled={!isValid || isSubmitting || calculating}
@@ -935,7 +937,7 @@ const EligibilityCalculator = () => {
 
                                         {/* Optional: Show message when form is incomplete */}
                                         {!isValid && !isSubmitting && !calculating && (
-                                            <p className="text-sm text-amber-600 mt-2 text-center">
+                                            <p className="text-sm text-amber-600 mt-3 text-center">
                                                 Please fill in all required fields to check eligibility
                                             </p>
                                         )}

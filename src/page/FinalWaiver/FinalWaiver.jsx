@@ -282,20 +282,20 @@ const FinalWaiver = () => {
     };
 
     return (
-        <div className="container max-w-7xl mx-auto min-h-screen px-4 py-10 md:py-14 lg:py-20">
+        <div className="container max-w-7xl mx-auto min-h-screen px-4 py-10 md:py-14">
             {/* Header */}
-            <div className="text-center mb-10 lg:mb-0">
+            <div className="text-center mb-10">
                 <div className="flex flex-col items-center gap-2 md:gap-4">
                     <div className='flex justify-center md:items-center lg:items-start gap-x-5'>
                         <div className="hidden md:block p-2 bg-linear-to-r from-blue-600 to-indigo-600 rounded-xl">
                             <GraduationCap className="w-6 h-6 text-white" />
                         </div>
-                        <h3 className="text-2xl md:text-4xl font-semibold">
+                        <h3 className="text-2xl md:text-3xl lg:text-4xl font-semibold">
                             Calculate Your Waiver & Tuition Fees
                         </h3>
                     </div>
                     <div>
-                        <p className="md:text-lg max-w-3xl mx-auto leading-relaxed">
+                        <p className="lg:text-lg max-w-xl lg:max-w-3xl mx-auto leading-relaxed">
                             Discover your tuition fees through applicable waivers and scholarships. Get instant details of your admission payments and total savings.
                         </p>
                     </div>
@@ -305,7 +305,7 @@ const FinalWaiver = () => {
             {/* Main Content - Left Form, Right Result */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-8 no-animation-grid">
                 {/* Left Side - Form */}
-                <div className="bg-linear-to-br from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg border border-gray-200 lg:mt-12">
+                <div className="bg-linear-to-br from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg border border-gray-200">
                     <div className="bg-linear-to-r from-blue-100 to-white p-2 border-b border-gray-200 rounded-t-2xl">
                         <h3 className="text-lg md:text-xl lg:text-2xl font-semibold flex items-center justify-center">
                             <svg className="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -659,7 +659,7 @@ const FinalWaiver = () => {
                             <button
                                 onClick={calculateWaiver}
                                 disabled={!isFormValid() || isCalculating}
-                                className="w-full bg-blue-800 text-white p-2.5 rounded-lg font-semibold text-lg hover:bg-blue-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer mt-8"
+                                className="w-full bg-blue-800 text-white p-2.5 rounded-lg font-semibold text-lg hover:bg-blue-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer mt-10"
                             >
                                 {isCalculating ? (
                                     <>
@@ -677,7 +677,7 @@ const FinalWaiver = () => {
 
                         {/* Show message when form is incomplete */}
                         {!isFormValid() && (
-                            <p className="text-sm text-amber-600 text-center mt-2">
+                            <p className="text-sm text-amber-600 text-center mt-3">
                                 Please fill in all required fields to check eligibility
                             </p>
                         )}
@@ -685,9 +685,9 @@ const FinalWaiver = () => {
                 </div>
 
                 {/* Right Side - Result */}
-                <div id="results-section" className="lg:sticky lg:top-8 h-fit">
+                <div id="results-section" className="lg:sticky lg:top-20 h-fit">
                     {isCalculating ? (
-                        <div className="bg-linear-to-tr from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg p-6 border border-gray-200 h-full flex items-center justify-center lg:mt-12">
+                        <div className="bg-linear-to-tr from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg p-6 border border-gray-200 h-full flex items-center justify-center">
                             <div className="text-center py-12">
                                 <Loader2 className="w-16 h-16 text-blue-600 animate-spin mx-auto mb-4" />
                                 <h3 className="text-xl font-bold mb-2">Calculating Your Waiver</h3>
@@ -695,7 +695,7 @@ const FinalWaiver = () => {
                             </div>
                         </div>
                     ) : result ? (
-                            <div className="bg-linear-to-tr from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg p-4 md:p-6 border border-gray-200 animate-fadeIn lg:mt-12">
+                            <div className="bg-linear-to-tr from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg p-4 md:p-6 border border-gray-200 animate-fadeIn">
                             <h2 className="md:text-xl font-bold mb-4 md:mb-6 flex items-center gap-2">
                                 <div className="w-1 h-6 bg-linear-to-b from-green-600 to-emerald-600 rounded-full"></div>
                                 Your Waiver Results
@@ -856,7 +856,7 @@ const FinalWaiver = () => {
                             </button>
                         </div>
                     ) : (
-                        <div className="bg-linear-to-tr from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg p-6 border border-gray-200 h-full flex items-center justify-center lg:mt-12">
+                        <div className="bg-linear-to-tr from-slate-50 via-white to-indigo-50 rounded-2xl shadow-lg p-6 border border-gray-200 h-full flex items-center justify-center">
                             <div className="text-center py-12">
                                 <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <GraduationCap className="w-10 h-10 text-blue-600" />

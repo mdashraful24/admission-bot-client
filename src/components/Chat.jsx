@@ -111,7 +111,7 @@ export default function Chat() {
             {/* Helmet */}
             <title>Chat | DIU Admission Bot</title>
 
-            <div className="flex flex-col h-[calc(100vh-64px)] md:h-[calc(100vh-0px)]">
+            <div className="flex flex-col h-[calc(100vh-0px)]">
                 {/* Header */}
                 <div className='border-b border-slate-200 bg-white px-4 py-3 shadow-sm'>
                     <div className="container mx-auto flex justify-between items-center">
