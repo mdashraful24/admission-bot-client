@@ -10,7 +10,7 @@ export default function MessageBubble({ message }) {
             )}
             <div
                 className={`max-w-xs lg:max-w-2xl px-4 py-2 ${isUser
-                    ? 'bg-blue-500 text-white rounded-2xl rounded-br-none'
+                    ? 'bg-blue-500 text-white rounded-xl rounded-br-none'
                     : 'bg-slate-200 rounded-lg rounded-tl-none'
                     }`}
             >

@@ -126,7 +126,7 @@ export default function Chat() {
                         {messages.length > 0 && (
                             <button
                                 onClick={handleClearChat}
-                                className="btn btn-primary"
+                                className="btn btn-primary px-3"
                             >
                                 <span className='hidden md:block'>Clear Chat</span>
                                 <span className='block md:hidden'>Clear</span>

@@ -28,10 +28,8 @@ const Navbar = () => {
                 <div className="flex items-center justify-between h-16">
                     {/* Logo and Brand */}
                     <Link to="/" className="flex items-center gap-3" onClick={closeMenu}>
-                        <div className="hidden md:block">
-                            <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center text-white font-bold text-lg">
-                                AB
-                            </div>
+                        <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center text-white font-bold text-lg">
+                            AB
                         </div>
                         <span className="text-xl md:text-2xl font-bold truncate drop-shadow md:drop-shadow-none">
                             DIU Admission Bot
@@ -65,7 +63,7 @@ const Navbar = () => {
                             )}
                         </div>
 
-                        <Link to="/chat" className="px-3 py-2 font-semibold text-[0.95rem] border border-gray-200 rounded-xl drop-shadow shadow hover:bg-linear-to-r from-blue-50 to-blue-100">Chat</Link>
+                        <Link to="/chat" className="px-3 py-2 font-semibold text-[0.95rem] border border-gray-200 rounded-xl drop-shadow hover:bg-linear-to-r from-blue-50 to-blue-100">Chat</Link>
 
                         {/* Menu Button */}
                         {!isHomePage && (

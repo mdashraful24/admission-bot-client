@@ -128,7 +128,7 @@ export default function ChatInput({ onSendMessage, isLoading, suggestions = [] }
                 <button
                     type="submit"
                     disabled={isLoading || !input.trim()}
-                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-100 disabled:cursor-not-allowed text-white disabled:text-slate-400 font-medium px-4 py-2.5 rounded-lg transition-colors flex items-center justify-center"
+                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-100 disabled:cursor-not-allowed text-white disabled:text-slate-400 font-medium px-4 py-2.5 rounded-lg transition-colors flex items-center justify-center cursor-pointer"
                 >
                     {isLoading ? (
                         <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
