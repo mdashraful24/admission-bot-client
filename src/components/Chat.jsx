@@ -117,16 +117,20 @@ export default function Chat() {
                     <div className="container mx-auto flex justify-between items-center">
                         <Link to="/">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center text-white font-bold text-lg">
-                                    AB
+                                <div className="hidden md:block">
+                                    <span className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center text-white font-bold text-lg">
+                                        AB
+                                    </span>
                                 </div>
-                                <span className="text-xl md:text-2xl font-bold">DIU Admission Bot</span>
+                                <span className="text-lg md:text-2xl font-bold truncate drop-shadow md:drop-shadow-none">
+                                    DIU Admission Bot
+                                </span>
                             </div>
                         </Link>
                         {messages.length > 0 && (
                             <button
                                 onClick={handleClearChat}
-                                className="btn btn-primary px-3"
+                                className="px-3 py-1 md:py-1.5 text-white font-medium border border-blue-200 rounded-lg bg-linear-to-r from-blue-500 to-blue-600 cursor-pointer hover:shadow-md"
                             >
                                 <span className='hidden md:block'>Clear Chat</span>
                                 <span className='block md:hidden'>Clear</span>
